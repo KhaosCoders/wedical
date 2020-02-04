@@ -1,0 +1,43 @@
+{
+  "name": "wedical",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon ./bin/www",
+    "pug-lint": "pug-lint"
+  },
+  "dependencies": {
+    "animate.css": "^3.7.2",
+    "authorize": "0.0.1",
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.4.1",
+    "debug": "~4.1.1",
+    "eruda": "^1.10.3",
+    "express": "~4.17.1",
+    "express-session": "^1.17.0",
+    "http-errors": "~1.7.3",
+    "i18n": "^0.8.4",
+    "jquery": "^3.4.1",
+    "jquery-aniview": "^1.0.2",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "~1.9.1",
+    "nedb": "^1.8.0",
+    "nedb-models": "^3.0.1",
+    "nedb-promises": "^4.0.1",
+    "nedb-session-store": "^1.1.2",
+    "node-authorization": "^2.0.2",
+    "node-sass-middleware": "0.11.0",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "pug": "^2.0.4",
+    "validator": "^12.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2",
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0",
+    "pug-lint": "^2.6.0",
+    "pug-lint-config-clock": "^2.0.0",
+    "stylelint-config-standard": "^19.0.0"
+  }
+}

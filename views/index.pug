@@ -1,0 +1,7 @@
+extends main_layout.pug
+block content
+  nav.navbar.navbar-dark
+    a.btn.btn-secondary(href='/manage')= __('Manage')
+    a.btn.btn-primary(href='/invite')= __('Invite')
+
+  include content/home.pug
