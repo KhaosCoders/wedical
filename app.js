@@ -8,6 +8,7 @@ const sassMiddleware = require('node-sass-middleware');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const i18n = require('i18n');
+const fs = require('fs');
 const { Auth } = require('./auth');
 
 // ensure admin user
@@ -57,6 +58,15 @@ app.use('/js/eruda.js',
 app.use('/styles/animate.min.css',
     express.static(__dirname +
         '/node_modules/animate.css/animate.min.css'));
+// fontawesome
+var faDir = __dirname + '/node_modules/@fortawesome/fontawesome-free';
+app.use('/styles/fontawesome.min.css',
+    express.static(faDir +
+        '/css/all.min.css'));
+fs.readdirSync(faDir + '/webfonts').forEach(file => {
+    app.use('/webfonts/' + file,
+        express.static(faDir + '/webfonts/' + file));
+});
 
 // Authentication
 Auth.useAuthentication(app);

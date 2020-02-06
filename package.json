@@ -7,6 +7,7 @@
         "pug-lint": "pug-lint"
     },
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.12.1",
         "animate.css": "^3.7.2",
         "authorize": "0.0.1",
         "body-parser": "^1.19.0",
