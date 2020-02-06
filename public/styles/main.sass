@@ -1,3 +1,38 @@
-body
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif
+@import 'colors'
 
+html
+  height: 100%
+
+body
+  height: 99%!important
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif
+  background: radial-gradient(ellipse at bottom, $pageBgStart 0%, $pageBgStop 100%)
+
+// Grid pattern
+@function borderShadow ($n)
+  $value: '0px 0px #{$lineColor}'
+  @for $i from 0 through $n
+    $value: '#{$value} , 0px #{($step)*$i}px #{$lineColor}'
+  @return unquote($value)
+
+@function stripeShadow ($n)
+  $value: '0px 0px #{$lineColor}'
+  @for $i from 0 through $n
+    $value: '#{$value} , #{($step)*$i}px 0px #{$lineColor}'
+
+  @return unquote($value)
+
+$border:  borderShadow(1000)
+$stripe:  stripeShadow(1000)
+
+#grid
+  width: 100%
+  height: $borderWeight
+  box-shadow: $border
+
+  &:after
+    content: ""
+    position: absolute
+    width: $borderWeight
+    height: 100%
+    box-shadow: $stripe

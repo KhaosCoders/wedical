@@ -1,6 +1,13 @@
 const strategies = {
-  UNKNOWN: 'unknown',
-  LOCAL: 'local',
+    UNKNOWN: 'unknown',
+    LOCAL: 'local',
 };
 
-module.exports = { Strategies: strategies};
+var loginWithRedirect = function(url) {
+    return '/login?redirect_url=' + encodeURIComponent(url);
+};
+
+module.exports = {
+    Strategies: strategies,
+    LoginWithRedir: loginWithRedirect,
+};
