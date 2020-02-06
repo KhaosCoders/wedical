@@ -3,11 +3,4 @@ const strategies = {
     LOCAL: 'local',
 };
 
-var loginWithRedirect = function(url) {
-    return '/login?redirect_url=' + encodeURIComponent(url);
-};
-
-module.exports = {
-    Strategies: strategies,
-    LoginWithRedir: loginWithRedirect,
-};
+module.exports = { Strategies: strategies };

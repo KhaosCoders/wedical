@@ -13,6 +13,25 @@ var User = require('./models/user');
  * @class Auth
  */
 class Auth {
+
+    /**
+     * Ensures that the user is authenticated (logged in)
+     * @param {string} url Redirect URL after login
+     */
+    static authenticate(url) {
+        return [
+            // passport.js SessionStrategy accepts empty sessions as valid!? WTF!
+            passport.authenticate('session'),
+            // Therefore we do the failure redirect on our own here
+            function(req, res, next) {
+                if (!req.user) {
+                    return res.redirect('/login?redirect_url=' + encodeURIComponent(url));
+                }
+                return next();
+            }
+        ];
+    }
+
     /**
      * Configurates authentication middleware
      * @param {Object} app - express app instance

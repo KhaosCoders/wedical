@@ -1,15 +1,10 @@
 const express = require('express');
-const router = express.Router();
 const passport = require('passport');
-const { LoginWithRedir } = require('../../auth-utils');
-
-// authentication requirement
-const auth = passport.authenticate('session', {
-    failureRedirect: LoginWithRedir('/manage'),
-});
+const router = express.Router();
+const { Auth } = require('../../auth');
 
 // Define the manage page route.
-router.get('/', auth, function(req, res) {
+router.get('/', Auth.authenticate('/manage'), function(req, res) {
     res.render('manage/index', null);
 });
 
