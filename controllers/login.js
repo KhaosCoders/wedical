@@ -8,7 +8,7 @@ const passport = require('passport');
 // Define the login page route.
 router.get('/', function(req, res) {
     debug('serve login page');
-    res.render('login', null);
+    res.render('login/login', null);
 });
 
 // Handle login POST
