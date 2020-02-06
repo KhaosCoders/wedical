@@ -1,6 +1,13 @@
 extends main_layout.pug
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  main(class='h-100')
+      div(class='container h-100')
+        div(class='row h-100')
+            div(class='col-8 offset-2 my-auto')
+              div(class='card bg-danger text-white')
+                div(class='card-header')
+                  h2 Error #{error.status}
+                div(class='card-body')
+                  h2= message
+                  pre #{error.stack}

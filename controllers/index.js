@@ -7,13 +7,13 @@ router.use('/invite', require('./invite'));
 // load management routes
 router.use('/manage', require('./manage'));
 
-// load login route
+// load login/logout route
 router.use('/login', require('./login'));
+router.use('/logout', require('./logout'));
 
 // Define the home page route.
 router.get('/', function(req, res) {
-  res.render('index', null);
+    res.render('index', null);
 });
 
 module.exports = router;
-
