@@ -10,6 +10,21 @@ html
   body
     #grid
     include ../_navbar.pug
-    block content
+    main.mt-2
+      div.container.bg-light.rounded
+        div.row
+          div.col
+            if breadcrumps
+              nav.my-2(aria-label='breadcrumb')
+                ol.breadcrumb
+                  each crump, index in breadcrumps
+                    - var crumpActive= index+1===breadcrumps.length
+                    li(class=crumpActive ? 'breadcrumb-item active' : 'breadcrumb-item', aria-current=crumpActive ? 'page' : '')
+                      if crumpActive
+                        = crump.title
+                      else
+                        a(href=crump.link)= crump.title
+
+            block content
     script(src='/js/jquery.min.js')
     script(src='/js/bootstrap.bundle.min.js')

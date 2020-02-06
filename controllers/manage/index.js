@@ -1,10 +1,13 @@
 const express = require('express');
-const passport = require('passport');
 const router = express.Router();
 const { Auth } = require('../../auth');
+const { addBreadcrump } = require('../../utils');
+
+// Manage bread crump
+var manageBC = addBreadcrump('Manage', '/manage');
 
 // Define the manage page route.
-router.get('/', Auth.authenticate('/manage'), function(req, res) {
+router.get('/', Auth.authenticate('/manage'), manageBC, function(req, res) {
     res.render('manage/index', null);
 });
 
