@@ -1,24 +1,24 @@
 extends login_layout.pug
 
 block content
-  div(class='card bg-light')
-    div(class='card-header')
+  div.card.bg-light
+    div.card-header
       h2 Login
-    div(class='card-body')
+    div.card-body
       form(method='post', action='/login')
         input(type='hidden', name='redirect_url', value=query.redirect_url)
-        div(class='form-group row')
-          label(for='email', class='col-sm-3 col-form-label') Email
-          div(class='col-sm-9')
-            input(type='email', class='form-control', id='email', name='email', placeholder='example@web.com')
-        div(class='form-group row')
-          label(for='password', class='col-sm-3 col-form-label') Password
-          div(class='col-sm-9')
-            input(type='password', class='form-control', id='password', name='password', placeholder='****')
+        div.form-group.row
+          label.col-sm-3.col-form-label(for='email') Email
+          div.col-sm-9
+            input.form-control#email(type='email', name='email', placeholder='example@web.com')
+        div.form-group.row
+          label.col-sm-3.col-form-label(for='password') Password
+          div.col-sm-9
+            input.form-control#password(type='password', name='password', placeholder='****')
         if Object.entries(errors).length !== 0
-          div(class='row')
-            div(class='col-sm-12')
-              div(class='alert alert-danger pb-0', role='alert')
+          div.row
+            div.col-sm-12
+              div.alert.alert-danger.pb-0(role='alert')
                 each err in errors
                   p
                     b= err.param
@@ -26,6 +26,6 @@ block content
                     |
                     |
                     = err.msg
-        div(class='form-group row')
-          div(class='col-sm-4 offset-sm-8')
-            button(type='submit', class='btn btn-info w-100') Login
+        div.form-group.row
+          div.col-sm-4.offset-sm-8
+            button.btn.btn-info.w-100(type='submit') Login
