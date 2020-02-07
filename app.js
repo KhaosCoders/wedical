@@ -34,7 +34,13 @@ app.use(bodyParser.urlencoded({
 }));
 
 // use helmet for protection
-app.use(helmet());
+app.use(helmet.contentSecurityPolicy({
+    directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", 'fonts.googleapis.com'],
+        fontSrc: ["'self'", 'fonts.gstatic.com']
+    }
+}));
 
 // sessions
 Auth.useSessions(app);
