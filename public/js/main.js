@@ -16,4 +16,7 @@
 (function() {
     // init datatables (use __ from en.js/de.js/...)
     $('.data-table').DataTable({ language: __ });
+
+    // init endless input containers
+    $('.endlessInput').endlessInput();
 })();
