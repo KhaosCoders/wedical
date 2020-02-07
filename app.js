@@ -38,7 +38,8 @@ app.use(helmet.contentSecurityPolicy({
     directives: {
         defaultSrc: ["'self'"],
         styleSrc: ["'self'", 'fonts.googleapis.com'],
-        fontSrc: ["'self'", 'fonts.gstatic.com']
+        fontSrc: ["'self'", 'data:', 'fonts.gstatic.com'],
+        imgSrc: ["'self'", 'data:'],
     }
 }));
 
@@ -55,6 +56,9 @@ app.use(flash());
 app.use('/js/jquery.min.js',
     express.static(__dirname +
         '/node_modules/jquery/dist/jquery.min.js'));
+app.use('/js/jquery.form.min.js',
+    express.static(__dirname +
+        '/node_modules/jquery-form/dist/jquery.form.min.js'));
 // Bootstrap
 app.use('/js/bootstrap.bundle.min.js',
     express.static(__dirname +
