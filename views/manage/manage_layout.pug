@@ -23,7 +23,7 @@ html
                     - var crumpActive= index+1===breadcrumps.length
                     li(class=crumpActive ? 'breadcrumb-item active' : 'breadcrumb-item', aria-current=crumpActive ? 'page' : '')
                       if crumpActive
-                        = crump.title
+                        = __(crump.title)
                       else
                         a(href=crump.link)= crump.title
 

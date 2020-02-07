@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser');
 const i18n = require('i18n');
 const fs = require('fs');
 const { Auth } = require('./auth');
+const i18nExt = require('./extension/i18n-ext');
 
 // ensure admin user
 Auth.setupRoles();
@@ -91,17 +92,16 @@ i18n.configure({
 // express helper for natively supported engines
 app.use(function(req, res, next) {
     if (req.path.indexOf('.') === -1) {
-        // i18n __()
-        const i18nDir = __dirname + '/locales' + req.path;
-        debug('Configure i18n. Load from dir: ' + i18nDir);
-        i18n.configure({
+        // Load a hierarchy of locales into i18n module
+        i18nExt.configureHierarchy(__dirname + '/locales', req.path, {
             locales: ['en', 'de'],
             defaultLocale: 'en',
-            directory: i18nDir,
+            extension: '.json',
             register: global,
         });
 
         debug('forward locals to template engine');
+        // i18n __()
         res.locals.__ = res.__ = function() {
             return i18n.__.apply(req, arguments);
         };

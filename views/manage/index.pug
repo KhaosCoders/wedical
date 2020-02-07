@@ -7,15 +7,15 @@ mixin tile(icon,text,link)
     div.font-weight-bold= text
 
 block content
-  h2 Guests
+  h2= __('Guests')
   div.container.my-2
     div.row
-      +tile('fa-user-friends', 'Guest List', '/manage/guests')
-      +tile('fa-users', 'Guest Groups', '/manage/guest-groups')
-      +tile('fa-envelope-open-text', 'Invitations', '/manage/invites')
+      +tile('fa-user-friends', __('Guest List'), '/manage/guests')
+      +tile('fa-users', __('Guest Groups'), '/manage/guest-groups')
+      +tile('fa-envelope-open-text', __('Invitations'), '/manage/invites')
   hr
-  h2 Users
+  h2= __('Users')
   div.container.my-2
     div.row
-      +tile('fa-users-cog', 'Users', '/manage/users')
-      +tile('fa-user-tag', 'Roles', '/manage/roles')
+      +tile('fa-users-cog', __('Users'), '/manage/users')
+      +tile('fa-user-tag', __('Roles'), '/manage/roles')
