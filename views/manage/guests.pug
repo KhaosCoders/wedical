@@ -1,11 +1,45 @@
 extends manage_layout.pug
 
+include ../includes/_modals.pug
+
 block content
-    table.data-table.display(data-page-length='25',
+    span.table-add.float-right.mb-3.mr-2
+        a.text-success(href='#', data-toggle='modal', data-target='#addGuestModal')
+            i.fas.fa-plus.fa-2x(aria-hidden='true')
+    table.data-table.table.table-striped.table-responsive-md(data-page-length='25',
             data-order='[[ 1, "asc" ]]',
             data-ajax='/manage/guests/list',
-            data-columns='[{"data": "name"}, {"data": "count"}]')
+            data-columns='[{"data": "name"}, {"data": "age"}, {"data": "sex"}]')
         thead
             tr
-                th Name
-                th Anzahl
+                th= __('Name')
+                th= __('Age')
+                th= __('Gender')
+
+    +wideModal('addGuestModal', __('Add Guests'), __('Add'), __('Abort'))
+        form.endlessInput(data-input-template='#inputTemplate', method='post', action='/manage/guests')
+            div.form-row
+                div.form-group.col-6
+                    label(for='group')= __('Group')
+                    input.form-control(type='text', name='group', placeholder=__('Group caption'))
+                div.form-group.col-6
+                    label(for='address')= __('Address')
+                    input.form-control(type='text', name='address', placeholder=__('Home address'))
+            div.form-group
+                hr
+            div.form-row.collapse#inputTemplate
+                div.form-group.col-6
+                    input.form-control(type='text', name='guest%sname', placeholder=__('%s. Guest'))
+                div.form-group.col-3
+                    input.form-control(type='number', name='guest%sage', placeholder=__('Age'))
+                div.form-group.col-3
+                    div.btn-group.btn-group-toggle(data-toggle='buttons')
+                        label.btn.btn-male
+                            input#male(type='radio', name='guest%sgender', value='m', autocomplete='off')
+                            i.fas.fa-mars
+                        label.btn.btn-divers
+                            input#diverse(type='radio', name='guest%sgender', value='d', autocomplete='off')
+                            i.fas.fa-genderless
+                        label.btn.btn-female
+                            input#female(type='radio', name='guest%sgender', value='f', autocomplete='off')
+                            i.fas.fa-venus

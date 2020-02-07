@@ -1,1 +1,11 @@
-{}
+{
+    "Add Guests": "Gäste hinzufügen",
+    "Name": "Name",
+    "Age": "Alter",
+    "Gender": "Geschlecht",
+    "Group": "Gruppe",
+    "Group caption": "Gruppierung",
+    "Address": "Adresse",
+    "Home address": "Heimatadresse",
+    "%s. Guest": "%s. Gast"
+}
