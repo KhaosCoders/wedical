@@ -18,6 +18,12 @@ var Role = require('./models/role');
  */
 class Auth {
 
+    /**
+     * Asserts that the current user is authorized to access a resources.
+     * Aborts the request with 403 status if not authorized
+     * @param {string} objName Name of the object to access
+     * @param {Object} objFields Authorization relevant fields and values of the object
+     */
     static authorize(objName, objFields) {
         return function(req, res, next) {
             if (!req.user.Authorization.check(objName, objFields)) {
