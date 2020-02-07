@@ -4,15 +4,20 @@ const router = express.Router();
 const validator = require('express-validator');
 const i18n = require('i18n');
 const passport = require('passport');
+const csrf = require('csurf');
+
+// CSRF
+var csrfProtection = csrf();
 
 // Define the login page route.
-router.get('/', function(req, res) {
+router.get('/', csrfProtection, function(req, res) {
     debug('serve login page');
-    res.render('login/login', null);
+    res.render('login/login', { csrfToken: req.csrfToken() });
 });
 
 // Handle login POST
 router.post('/',
+    csrfProtection,
     // Validate input
     validator.body('email', i18n.__('not a valid email.')).isEmail(),
     validator.body('password', i18n.__('has to be at least 5 characters long.')).isLength({ min: 4 }),

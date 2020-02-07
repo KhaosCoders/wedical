@@ -6,6 +6,7 @@ block content
       h2 Login
     div.card-body
       form(method='post', action='/login')
+        input(type='hidden', name='_csrf' value=csrfToken)
         input(type='hidden', name='redirect_url', value=query.redirect_url)
         div.form-group.row
           label.col-sm-3.col-form-label(for='email') Email
