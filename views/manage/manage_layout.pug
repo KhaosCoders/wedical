@@ -1,3 +1,5 @@
+include ../includes/_navbar.pug
+
 doctype html
 html
   head
@@ -7,13 +9,14 @@ html
     title= title
     link(rel='stylesheet', type='text/css', href='/styles/bootstrap.min.css')
     link(rel='stylesheet', type='text/css', href='/styles/main.css')
+    link(rel='stylesheet', type='text/css', href='/styles/buttons.css')
     link(rel='stylesheet', type='text/css', href='/styles/bootstrap.tiles.css')
     link(rel='stylesheet', type='text/css', href='/styles/fontawesome.min.css')
     link(rel='stylesheet', type='text/css', href='/styles/datatables.min.css')
     link(rel='stylesheet', type='text/css', href='/styles/datatables.bootstrap4.min.css')
   body
     #grid
-    include ../_navbar.pug
+    +pagenav
     main.mt-2
       div.container.bg-light.rounded
         div.row
@@ -31,6 +34,7 @@ html
 
             block content
     script(src='/js/jquery.min.js')
+    script(src='/js/jquery.endless-input.js')
     script(src='/js/bootstrap.bundle.min.js')
     script(src='/js/dataTables.min.js')
     script(src='/js/dataTables.bootstrap4.min.js')
