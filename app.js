@@ -19,7 +19,7 @@ Auth.setupAdmin();
 
 // express app setup
 debug('begin app setup');
-var app = express();
+let app = express();
 
 // use morgan logger
 app.use(logger('dev'));
@@ -65,7 +65,7 @@ app.use('/styles/animate.min.css',
     express.static(__dirname +
         '/node_modules/animate.css/animate.min.css'));
 // fontawesome
-var faDir = __dirname + '/node_modules/@fortawesome/fontawesome-free';
+let faDir = __dirname + '/node_modules/@fortawesome/fontawesome-free';
 app.use('/styles/fontawesome.min.css',
     express.static(faDir +
         '/css/all.min.css'));
@@ -73,6 +73,23 @@ fs.readdirSync(faDir + '/webfonts').forEach(file => {
     app.use('/webfonts/' + file,
         express.static(faDir + '/webfonts/' + file));
 });
+// datatables
+let dtDir = __dirname + '/node_modules/datatables.net-dt';
+app.use('/styles/datatables.min.css',
+    express.static(dtDir + '/css/jquery.dataTables.min.css'));
+fs.readdirSync(dtDir + '/images').forEach(file => {
+    app.use('/images/' + file,
+        express.static(dtDir + '/images/' + file));
+});
+app.use('/styles/datatables.bootstrap4.min.css',
+    express.static(__dirname +
+        '/node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css'));
+app.use('/js/dataTables.bootstrap4.min.js',
+    express.static(__dirname +
+        '/node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js'));
+app.use('/js/dataTables.min.js',
+    express.static(__dirname +
+        '/node_modules/datatables.net/js/jquery.dataTables.min.js'));
 
 // Authentication
 Auth.useAuthentication(app);
