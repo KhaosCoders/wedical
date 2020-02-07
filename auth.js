@@ -286,6 +286,7 @@ class Auth {
 
         app.use(session({
             secret: config.secret,
+            name: 'session',
             resave: false,
             saveUninitialized: false,
             cookie: cookie,
