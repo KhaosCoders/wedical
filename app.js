@@ -12,6 +12,7 @@ const fs = require('fs');
 const { Auth } = require('./auth');
 
 // ensure admin user
+Auth.setupRoles();
 Auth.setupAdmin();
 
 // express app setup

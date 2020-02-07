@@ -6,7 +6,14 @@ const { Model, Timestamps } = require('nedb-models');
 const { Strategies } = require('../auth-utils');
 
 /**
- * Model for website user
+ * Model for website users
+ *
+ * Properties:
+ * - email
+ * - strategy
+ * - roles
+ * - salt
+ * - pwHash
  */
 class User extends Model {
     /**
@@ -32,6 +39,7 @@ class User extends Model {
             values: {
                 email: '',
                 strategy: Strategies.UNKNOWN,
+                roles: [],
             },
         });
     }

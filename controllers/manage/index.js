@@ -7,8 +7,12 @@ const { addBreadcrump } = require('../../utils');
 var manageBC = addBreadcrump('Manage', '/manage');
 
 // Define the manage page route.
-router.get('/', Auth.authenticate('/manage'), manageBC, function(req, res) {
-    res.render('manage/index', null);
-});
+router.get('/',
+    Auth.authenticate('/manage'),
+    Auth.authorize('manage', {}),
+    manageBC,
+    function(req, res) {
+        res.render('manage/index', null);
+    });
 
 module.exports = router;

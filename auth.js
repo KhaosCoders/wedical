@@ -4,8 +4,12 @@ const NedbStore = require('nedb-session-store')(session);
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const i18n = require('i18n');
+const hash = require('object-hash');
+const Authorization = require('node-authorization').Authorization;
+const compileProfile = require('node-authorization').profileCompiler;
 const config = require('./config');
 var User = require('./models/user');
+var Role = require('./models/role');
 
 /**
  * Handles all the complicated authentication stuff
@@ -13,6 +17,92 @@ var User = require('./models/user');
  * @class Auth
  */
 class Auth {
+
+    static authorize(objName, objFields) {
+        return function(req, res, next) {
+            if (!req.user.Authorization.check(objName, objFields)) {
+                // Send HTTP FORBIDDEN
+                return res.status(403).send('Access Forbidden');
+            }
+            next();
+        };
+    }
+
+    /**
+     * Merges all auth profiles of a users roles and compiles the profile for authorization
+     * @param {User} user The user whos auth profile to complie
+     */
+    static async compileAuthorization(user) {
+        user.roles = user.roles ? user.roles : [];
+        let userProfiles = [];
+        // Merge all profiles from rules
+        for (let roleName of user.roles) {
+            await Role.findOne({ name: roleName })
+                .then(function(role, err) {
+                    if (role) {
+                        userProfiles.push(role.auth);
+                    }
+                });
+        }
+
+        // compile profile
+        user.authProfile = compileProfile(userProfiles);
+    }
+
+    /**
+     * Grants a user a new privilegue
+     * @param {Role} role The role whos privilegues to edit
+     * @param {string} authObject The name of the authorization object to add
+     * @param {Object} authFields The fields and values of the authorization object to add
+     */
+    static grant(role, authObject, authFields) {
+        role.auth = Auth.grantToProfile(role.auth ? role.auth : [], authObject, authFields);
+    }
+
+    /**
+     * Adds a new authorization entry to a authorization profile array
+     * @param {Array} authArr A array with all other authoriizations
+     * @param {string} authObject The name of the authorization object to add
+     * @param {Object} authFields The fields and values of the authorization object to add
+     * @returns Array with new authorization profile
+     */
+    static grantToProfile(authArr, authObject, authFields) {
+        authArr = authArr ? authArr : [];
+        if (!authObject) {
+            return authArr;
+        }
+        authFields = authFields ? authFields : {};
+
+        // check if object is already granted
+        let obj = authArr.find(x => x.AuthObject === authObject);
+        if (obj) {
+            // same auth obj found
+            let objAuthFields = obj.AuthFieldValue;
+
+            // check if the fields are also already knwon
+            for (let [key, values] of Object.entries(authFields)) {
+                if (objAuthFields[key]) {
+                    let objValues = objAuthFields[key];
+                    // field is known
+                    for (let value of values) {
+                        if (!objValues.find(x => x == value)) {
+                            objValues.push(value);
+                        }
+                    }
+                } else {
+                    // field is unkown
+                    objAuthFields[key] = values;
+                }
+            }
+        } else {
+            // is new auth obj
+            authArr.push({
+                "AuthObject": authObject,
+                "AuthFieldValue": authFields,
+            });
+        }
+        return authArr;
+    }
 
     /**
      * Ensures that the user is authenticated (logged in)
@@ -44,7 +134,7 @@ class Auth {
             },
             function(username, password, done) {
                 debug(`Local user: ${username} pw(len):${password.length}`);
-                User.findOne({ email: username }).then(function(user, err) {
+                User.findOne({ email: username }).then(async function(user, err) {
                     if (err) {
                         debug(`Error: ${JSON.stringify(err)}`);
                         return done(err);
@@ -57,23 +147,38 @@ class Auth {
                         debug('ERROR: Invalid password!');
                         return done(null, false, { param: 'password', msg: i18n.__('Incorrect email or password.') });
                     }
+
+                    // Aquire auth profile from user roles
+                    await Auth.compileAuthorization(user);
+
                     debug(`User successsfuly logged-in: ${username}`);
-                    return done(null, user);
+                    done(null, user);
                 });
             }));
 
         // user session serialization
         passport.serializeUser(function(user, done) {
             debug(`Serialize user: ${user._id}`);
-            done(null, user._id);
+            done(null, { userid: user._id, authProfile: user.authProfile });
         });
 
-        passport.deserializeUser(function(id, done) {
-            debug(`Deserialize user: ${id}`);
-            User.findOne({ _id: id })
+        passport.deserializeUser(function(identity, done) {
+            debug(`Deserialize user: ${identity.userid}`);
+            User.findOne({ _id: identity.userid })
                 .then(function(user) {
                     debug('user found');
-                    done(null, user);
+
+                    const reqUser = {
+                        identity: user,
+                        Authorization: null,
+                    };
+
+                    // load authentication profile
+                    if (identity.userid && identity.authProfile) {
+                        reqUser.Authorization = new Authorization(identity.userid, identity.authProfile);
+                    }
+
+                    done(null, reqUser);
                 })
                 .catch(function(err) {
                     debug(`ERROR: ${err}`);
@@ -91,11 +196,12 @@ class Auth {
      */
     static async setupAdmin() {
         debug('checking admin user');
-        var admin = await User.findOne({ email: config.admin.email });
+        let admin = await User.findOne({ email: config.admin.email });
         if (!admin) {
             debug('create admin user');
             admin = await User.create({
                 email: config.admin.email,
+                roles: ['Admin'],
             });
             admin.setLocalPw(config.admin.passwd);
 
@@ -106,11 +212,42 @@ class Auth {
                             debug('error! admin not found!');
                         }
                     });
-                })
-                .catch(function(err) {});
+                });
             return;
         }
         debug('admin exists');
+    }
+
+    /**
+     * Creates all default roles if not found
+     */
+    static async setupRoles() {
+        debug('checking roles');
+        var createRole = async function(name, authObj, authFields) {
+            let role = await Role.findOne({ name: name });
+            if (!role) {
+                debug(`create role: ${name}`);
+                role = await Role.create({
+                    name: name,
+                    buildIn: true,
+                });
+                Auth.grant(role, authObj, authFields);
+
+                await role.save()
+                    .then(function(usr, err) {
+                        Role.findOne({ name: name }).then(function(r) {
+                            if (!r) {
+                                debug('error! role not found!');
+                            }
+                        });
+                    });
+            }
+        };
+        // Default roles
+        await createRole('Guest');
+        await createRole('Admin', 'manage', {
+            'Segment': ['guests', 'invites', 'users'],
+        });
     }
 
     /**
@@ -119,7 +256,7 @@ class Auth {
      */
     static useSessions(app) {
         // cookie
-        var cookie = {
+        let cookie = {
             path: '/',
             maxAge: 365 * 24 * 60 * 60 * 1000,
             httpOnly: false,
