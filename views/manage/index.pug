@@ -1,6 +1,21 @@
 extends manage_layout.pug
 
+mixin tile(icon,text,link)
+  a.btn.btn-dark.btn.btn-sq-lg.float-left.m-2(href=link)
+    i.fa.fa-5x(class=icon)
+    hr.mb-2
+    div.font-weight-bold= text
+
 block content
-  h1 Management
-  p Welcome
-  p Test
+  h2 Guests
+  div.container.my-2
+    div.row
+      +tile('fa-user-friends', 'Guest List', '/manage/guests')
+      +tile('fa-users', 'Guest Groups', '/manage/guest-groups')
+      +tile('fa-envelope-open-text', 'Invitations', '/manage/invites')
+  hr
+  h2 Users
+  div.container.my-2
+    div.row
+      +tile('fa-users-cog', 'Users', '/manage/users')
+      +tile('fa-user-tag', 'Roles', '/manage/roles')
