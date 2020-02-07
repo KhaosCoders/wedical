@@ -1,0 +1,11 @@
+extends manage_layout.pug
+
+block content
+    table.data-table.display(data-page-length='25',
+            data-order='[[ 1, "asc" ]]',
+            data-ajax='/manage/guests/list',
+            data-columns='[{"data": "name"}, {"data": "count"}]')
+        thead
+            tr
+                th Name
+                th Anzahl

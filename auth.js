@@ -121,9 +121,13 @@ class Auth {
             // Therefore we do the failure redirect on our own here
             function(req, res, next) {
                 if (!req.user) {
+                    if (!url) {
+                        // Send HTTP FORBIDDEN
+                        return res.status(403).send('Access Forbidden');
+                    }
                     return res.redirect('/login?redirect_url=' + encodeURIComponent(url));
                 }
-                return next();
+                next();
             }
         ];
     }

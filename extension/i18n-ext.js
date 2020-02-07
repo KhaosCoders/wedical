@@ -37,7 +37,9 @@ module.exports = (function() {
                 i18nPath = path.join(i18nPath, dir);
                 for (let locale of i18nOptions.locales) {
                     let file = path.join(i18nPath, locale + i18nOptions.extension);
-                    i18nExt.addLocaleFile(locale, file);
+                    if (fs.existsSync(file)) {
+                        i18nExt.addLocaleFile(locale, file);
+                    }
                 }
             }
         }

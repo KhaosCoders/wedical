@@ -1,27 +1,25 @@
-const debug = require('debug')('wedical:role');
+const debug = require('debug')('wedical:guest');
 const path = require('path');
 const extend = require('extend');
 const { Model, Timestamps } = require('nedb-models');
 
 /**
- * Model for user roles
+ * Model for party guests
  *
  * Properties:
  * - name
- * - auth
- * - buildIn
  */
-class Role extends Model {
+class Guest extends Model {
     /**
      * defines the configuration of the datastore for this model
      * @return {Object}
      */
     static datastore() {
-        debug('create role datastore');
+        debug('create guest datastore');
         return {
             filename: path.join(
                 __dirname,
-                '../data/roles.db'),
+                '../data/guests.db'),
             inMemoryOnly: false,
         };
     }
@@ -34,14 +32,13 @@ class Role extends Model {
         return extend(true, super.defaults(), {
             values: {
                 name: '',
-                auth: [],
-                buildIn: false,
+                email: '',
             },
         });
     }
 
 }
 
-Role.use(Timestamps);
+Guest.use(Timestamps);
 
-module.exports = Role;
+module.exports = Guest;
