@@ -6,23 +6,39 @@ block content
     span.table-add.float-right.mb-3.mr-2
         a.text-success(href='#', data-toggle='modal', data-target='#addGuestModal')
             i.fas.fa-plus.fa-2x(aria-hidden='true')
-    table.data-table.table.table-striped.table-responsive-md(data-page-length='25',
-            data-order='[[ 1, "asc" ]]',
-            data-ajax='/manage/guests/list',
-            data-columns='[{"data": "name"}, {"data": "age"}, {"data": "sex"}]')
+    table.data-table.table.table-responsive-md#guestsTable(data-page-length='25',
+                                                            data-group-column='0'
+                                                            data-age-column='2'
+                                                            data-gender-column='3'
+                                                            data-order='[[ 1, "asc" ]]',
+                                                            data-ajax='/manage/guests/list',
+                                                            data-columns='[{"data": "group"}, {"data": "name"}, {"data": "age"}, {"data": "gender"}]')
         thead
             tr
+                th Group
                 th= __('Name')
                 th= __('Age')
                 th= __('Gender')
 
-    +wideModal('addGuestModal', __('Add Guests'), __('Add'), __('Abort'))
-        form.endlessInput(data-input-template='#inputTemplate', method='post', action='/manage/guests')
+    +wideModal('addGuestModal',
+                __('Add Guests'),
+                __('Add'),
+                __('Abort'),
+                'addGuestForm',
+                'addGuestError',
+                __('Error while transmitting data'))
+        form.endlessInput.ajaxForm#addGuestForm(data-input-template='#inputTemplate',
+                                                data-modal='#addGuestModal',
+                                                data-error='#addGuestError',
+                                                data-redraw-table='#guestsTable'
+                                                method='post',
+                                                action='/manage/guests')
+            input(type='hidden', name='_csrf' value=csrfToken)
             div.form-row
-                div.form-group.col-6
+                div.form-group.col-6.mb-0
                     label(for='group')= __('Group')
                     input.form-control(type='text', name='group', placeholder=__('Group caption'))
-                div.form-group.col-6
+                div.form-group.col-6.mb-0
                     label(for='address')= __('Address')
                     input.form-control(type='text', name='address', placeholder=__('Home address'))
             div.form-group
@@ -30,16 +46,35 @@ block content
             div.form-row.collapse#inputTemplate
                 div.form-group.col-6
                     input.form-control(type='text', name='guest%sname', placeholder=__('%s. Guest'))
-                div.form-group.col-3
-                    input.form-control(type='number', name='guest%sage', placeholder=__('Age'))
-                div.form-group.col-3
+                div.form-group.col-4
                     div.btn-group.btn-group-toggle(data-toggle='buttons')
-                        label.btn.btn-male
-                            input#male(type='radio', name='guest%sgender', value='m', autocomplete='off')
+                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Baby'))
+                            input(type='radio', name='guest%sage', value='baby', autocomplete='off')
+                            i.fas.fa-baby
+                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Child'))
+                            input(type='radio', name='guest%sage', value='child', autocomplete='off')
+                            i.fas.fa-child
+                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Teen'))
+                            input(type='radio', name='guest%sage', value='teen', autocomplete='off')
+                            i.fas.fa-male
+                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Young Adult'))
+                            input(type='radio', name='guest%sage', value='youndAdult', autocomplete='off')
+                            i.fas.fa-user
+                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Adult'))
+                            input(type='radio', name='guest%sage', value='adult', autocomplete='off')
+                            i.fas.fa-user-tie
+                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Senoir'))
+                            input(type='radio', name='guest%sage', value='senior', autocomplete='off')
+                            i.fas.fa-hiking
+
+                div.form-group.col-2
+                    div.btn-group.btn-group-toggle(data-toggle='buttons')
+                        label.btn.btn-male.lazy-tooltip(data-toggle='tooltip', title=__('Male'))
+                            input(type='radio', name='guest%sgender', value='m', autocomplete='off')
                             i.fas.fa-mars
-                        label.btn.btn-divers
-                            input#diverse(type='radio', name='guest%sgender', value='d', autocomplete='off')
+                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Diverse'))
+                            input(type='radio', name='guest%sgender', value='d', autocomplete='off')
                             i.fas.fa-genderless
-                        label.btn.btn-female
-                            input#female(type='radio', name='guest%sgender', value='f', autocomplete='off')
+                        label.btn.btn-female.lazy-tooltip(data-toggle='tooltip', title=__('Female'))
+                            input(type='radio', name='guest%sgender', value='f', autocomplete='off')
                             i.fas.fa-venus
