@@ -1,6 +1,27 @@
 extends manage_layout.pug
 
 include ../includes/_modals.pug
+include ../includes/_icons.pug
+
+mixin ageBtn(age, name)
+    label.btn.btn-gender-d.lazy-tooltip(data-toggle='tooltip', title=__(ages[age]))
+        input(type='radio', name=name, value=age, autocomplete='off')
+        +ageIcon(age)
+
+mixin genderBtn(gender, name)
+    label.btn.lazy-tooltip(class=`btn-gender-${gender}`, data-toggle='tooltip', title=__(genders[gender]))
+        input(type='radio', name=name, value=gender, autocomplete='off')
+        +genderIcon(gender)
+
+mixin editFormGroup(name, label)
+    div.form-group.row
+        label.col-sm-2.col-form-label(for=name)= label
+        div.col-sm-10
+            block
+
+mixin editFormInput(name, label, placeholder)
+    +editFormGroup(name, label)
+        input.form-control(type='text', name=name, placeholder= placeholder)
 
 block content
     span.table-add.float-right.mb-3.mr-2
@@ -51,36 +72,15 @@ block content
                     input.form-control(type='text', name='guest%sname', placeholder=__('%s. Guest'))
                 div.form-group.col-sm-6.col-md-6.col-lg-4
                     div.btn-group.btn-group-toggle(data-toggle='buttons')
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Baby'))
-                            input(type='radio', name='guest%sage', value='baby', autocomplete='off')
-                            i.fas.fa-baby
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Child'))
-                            input(type='radio', name='guest%sage', value='child', autocomplete='off')
-                            i.fas.fa-child
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Teen'))
-                            input(type='radio', name='guest%sage', value='teen', autocomplete='off')
-                            i.fas.fa-male
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Young Adult'))
-                            input(type='radio', name='guest%sage', value='youndAdult', autocomplete='off')
-                            i.fas.fa-user
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Adult'))
-                            input(type='radio', name='guest%sage', value='adult', autocomplete='off')
-                            i.fas.fa-user-tie
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Senoir'))
-                            input(type='radio', name='guest%sage', value='senior', autocomplete='off')
-                            i.fas.fa-hiking
+                        each text, age in ages
+                            if age !== 'undefined'
+                                +ageBtn(age, 'guest%sage')
 
                 div.form-group.col-sm-6.col-md-3.col-lg-2
                     div.btn-group.btn-group-toggle(data-toggle='buttons')
-                        label.btn.btn-male.lazy-tooltip(data-toggle='tooltip', title=__('Male'))
-                            input(type='radio', name='guest%sgender', value='m', autocomplete='off')
-                            i.fas.fa-mars
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Diverse'))
-                            input(type='radio', name='guest%sgender', value='d', autocomplete='off')
-                            i.fas.fa-genderless
-                        label.btn.btn-female.lazy-tooltip(data-toggle='tooltip', title=__('Female'))
-                            input(type='radio', name='guest%sgender', value='f', autocomplete='off')
-                            i.fas.fa-venus
+                        each text, gender in genders
+                            if gender !== 'undefined'
+                                +genderBtn(gender, 'guest%sgender')
 
     +deleteModal('deleteGuestModal',
                 __('Remove Guest'),
@@ -101,62 +101,20 @@ block content
                                     data-fill-method='GET'
                                     method='PUT',
                                     action='/manage/guests/{id}')
-            div.form-group.row
-                label.col-sm-2.col-form-label(for='name')= __('Name')
-                div.col-sm-10
-                    input.form-control(type='text', name='name', placeholder=__('Full Name'))
-            div.form-group.row
-                label.col-sm-2.col-form-label(for='email')= __('Email')
-                div.col-sm-10
-                    input.form-control(type='email', name='email', placeholder=__('Email-Address'))
-            div.form-group.row
-                label.col-sm-2.col-form-label(for='phone')= __('Phone')
-                div.col-sm-10
-                    input.form-control(type='tel', name='phone', placeholder=__('Phone Number'))
-            div.form-group.row
-                label.col-sm-2.col-form-label(for='group')= __('Group')
-                div.col-sm-10
-                    input.form-control(type='text', name='group', placeholder=__('Group caption'))
-            div.form-group.row
-                label.col-sm-2.col-form-label(for='address')= __('Address')
-                div.col-sm-10
-                    input.form-control(type='text', name='address', placeholder=__('Home address'))
-            div.form-group.row
-                label.col-sm-2.col-form-label(for='gender')= __('Gender')
-                div.col-sm-10
-                    div.btn-group.btn-group-toggle(data-toggle='buttons')
-                        label.btn.btn-male.lazy-tooltip(data-toggle='tooltip', title=__('Male'))
-                            input(type='radio', name='gender', value='m', autocomplete='off')
-                            i.fas.fa-mars
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Diverse'))
-                            input(type='radio', name='gender', value='d', autocomplete='off')
-                            i.fas.fa-genderless
-                        label.btn.btn-female.lazy-tooltip(data-toggle='tooltip', title=__('Female'))
-                            input(type='radio', name='gender', value='f', autocomplete='off')
-                            i.fas.fa-venus
-            div.form-group.row
-                label.col-sm-2.col-form-label(for='age')= __('Age')
-                div.col-sm-10
-                    div.btn-group.btn-group-toggle(data-toggle='buttons')
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Baby'))
-                            input(type='radio', name='age', value='baby', autocomplete='off')
-                            i.fas.fa-baby
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Child'))
-                            input(type='radio', name='age', value='child', autocomplete='off')
-                            i.fas.fa-child
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Teen'))
-                            input(type='radio', name='age', value='teen', autocomplete='off')
-                            i.fas.fa-male
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Young Adult'))
-                            input(type='radio', name='age', value='youndAdult', autocomplete='off')
-                            i.fas.fa-user
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Adult'))
-                            input(type='radio', name='age', value='adult', autocomplete='off')
-                            i.fas.fa-user-tie
-                        label.btn.btn-other.lazy-tooltip(data-toggle='tooltip', title=__('Senoir'))
-                            input(type='radio', name='age', value='senior', autocomplete='off')
-                            i.fas.fa-hiking
-            div.form-group.row
-                label.col-sm-2.col-form-label(for='updatedAt')= __('Last Change')
-                div.col-sm-10
-                    input.form-control-plaintext(type='text', readonly, name='updatedAt')
+            +editFormInput('name', __('Name'), __('Full Name'))
+            +editFormInput('email', __('Email'), __('Email-Address'))
+            +editFormInput('phone', __('Phone'), __('Phone Number'))
+            +editFormInput('group', __('Group'), __('Group caption'))
+            +editFormInput('address', __('Address'), __('Home address'))
+            +editFormGroup('gender', __('Gender'))
+                div.btn-group.btn-group-toggle(data-toggle='buttons')
+                    each text, gender in genders
+                        if gender !== 'undefined'
+                            +genderBtn(gender, 'gender')
+            +editFormGroup('age', __('Age'))
+                div.btn-group.btn-group-toggle(data-toggle='buttons')
+                    each text, age in ages
+                        if age !== 'undefined'
+                            +ageBtn(age, 'age')
+            +editFormGroup('updatedAt', __('Last Change'))
+                input.form-control-plaintext(type='text', readonly, name='updatedAt', data-format='datetime')

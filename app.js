@@ -12,6 +12,7 @@ const i18n = require('i18n');
 const fs = require('fs');
 const { Auth } = require('./auth');
 const i18nExt = require('./extension/i18n-ext');
+var Guest = require('./models/guest');
 
 // ensure admin user
 Auth.setupRoles();
@@ -145,6 +146,9 @@ app.use(function(req, res, next) {
         if (Object.entries(res.locals.dangers).length !== 0) { debug('dangers: ' + res.locals.dangers); }
         if (Object.entries(res.locals.warnings).length !== 0) { debug('warnings: ' + res.locals.warnings); }
         if (Object.entries(res.locals.errors).length !== 0) { debug('errors: ' + res.locals.errors); }
+        // genders & ages
+        res.locals.genders = Guest.genders;
+        res.locals.ages = Guest.ages;
     }
     next();
 });

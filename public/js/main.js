@@ -56,12 +56,23 @@
                 complete: handleCSRF,
                 error: function(err) { console.log(err); },
                 success: function(data) {
+                    form.find('input[type="radio"]').closest('label').removeClass('active');
                     if (data.data) {
                         for (let [key, value] of Object.entries(data.data)) {
-                            var input = form.find(`[name=${key}]`);
-                            input.not('[type="radio"]').val(value);
-                            input.filter('[type="radio"]').closest('label').removeClass('active');
-                            input.filter(`[type="radio"][value="${value}"]`).closest('label').addClass('active');
+                            var inputs = form.find(`[name=${key}]`);
+                            inputs.not('[type="radio"]').each(function() {
+                                var input = $(this);
+                                switch (input.data('format')) {
+                                    case 'datetime':
+                                        value = new Date(Date.parse(value)).toLocaleString();
+                                        break;
+                                    case 'date':
+                                        value = new Date(Date.parse(value)).toDateString();
+                                        break;
+                                }
+                                input.val(value);
+                            });
+                            inputs.filter(`[type="radio"][value="${value}"]`).closest('label').addClass('active');
                         }
                     }
                 }

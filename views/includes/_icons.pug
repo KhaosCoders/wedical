@@ -1,0 +1,27 @@
+mixin genderIcon(gender)
+    case gender
+        when 'undefined'
+            i.fas.fa-question
+        when 'm'
+            i.fas.fa-mars
+        when 'd'
+            i.fas.fa-genderless
+        when 'f'
+            i.fas.fa-venus
+
+mixin ageIcon(age)
+    case age
+        when 'undefined'
+            i.fas.fa-question
+        when 'baby'
+            i.fas.fa-baby
+        when 'child'
+            i.fas.fa-child
+        when 'teen'
+            i.fas.fa-male
+        when 'youndAdult'
+            i.fas.fa-user
+        when 'adult'
+            i.fas.fa-user-tie
+        when 'senior'
+            i.fas.fa-hiking
