@@ -109,3 +109,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Temp i18n folder
+_temp/

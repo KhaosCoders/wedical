@@ -29,17 +29,15 @@ module.exports = (function() {
         let i18nPath = baseDir;
 
         // i18n base configuration
-        i18nOptions.directory = i18nPath;
+        i18nOptions.directory = path.join(i18nPath, '_temp');
         i18n.configure(i18nOptions);
 
         for (let dir of requestPath.split('/')) {
-            if (dir) {
-                i18nPath = path.join(i18nPath, dir);
-                for (let locale of i18nOptions.locales) {
-                    let file = path.join(i18nPath, locale + i18nOptions.extension);
-                    if (fs.existsSync(file)) {
-                        i18nExt.addLocaleFile(locale, file);
-                    }
+            i18nPath = path.join(i18nPath, dir);
+            for (let locale of i18nOptions.locales) {
+                let file = path.join(i18nPath, locale + i18nOptions.extension);
+                if (fs.existsSync(file)) {
+                    i18nExt.addLocaleFile(locale, file);
                 }
             }
         }
