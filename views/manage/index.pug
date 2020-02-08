@@ -1,5 +1,7 @@
 extends manage_layout.pug
 
+include ../includes/_icons.pug
+
 mixin tile(icon,text,link)
   a.btn.btn-dark.btn.btn-sq-lg.float-left.m-2(href=link)
     i.fa.fa-5x(class=icon)
@@ -8,6 +10,24 @@ mixin tile(icon,text,link)
 
 block content
   h2= __('Guests')
+    span.badge.badge-secondary.mx-2= guestCount
+  div.h5
+    if guestCount > 0
+      each count, gender in guestGenders
+        if count > 0
+          span.badge.badge-pill.badge-secondary.mx-1(data-toggle='tooltip', title=__(genders[gender]))
+            +genderIcon(gender)
+            |
+            |
+            = count
+      span= '|'
+      each count, age in guestAges
+        if count > 0
+          span.badge.badge-pill.badge-secondary.mx-1(data-toggle='tooltip', title=__(ages[age]))
+            +ageIcon(age)
+            |
+            |
+            = count
   div.container.my-2
     div.row
       +tile('fa-user-friends', __('Guest List'), '/manage/guests')

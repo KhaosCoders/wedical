@@ -41,5 +41,12 @@
     "Remove Guest": "Gast löschen",
     "Remove this guest?": "Diesen Gast entfernen?",
     "Save": "Speichern",
-    "Edit Guest": "Gast bearbeiten"
+    "Edit Guest": "Gast bearbeiten",
+    "Full Name": "Voller Name",
+    "Email": "Email",
+    "Email-Address": "Email-Adresse",
+    "Last Change": "Letzte Änderung",
+    "Phone": "Telefon",
+    "Phone Number": "Telefonnummer",
+    "Undefined": "Nicht definiert"
 }
