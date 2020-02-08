@@ -11,12 +11,26 @@ body
 main
   position: relative
 
+// DataTable
+tr.odd:hover,
+tr.even:hover
+  background-color: #eee !important
+
 tr.group,
 tr.group:hover
     background-color: #ddd !important
 
+td.actionColumn
+  padding: 0!important
+  position: relative
 
-// Grid pattern
+td.actionColumn div.action-group
+  position: absolute
+  right: 0
+  top: -1px
+  height: 104%
+
+// Grid background pattern
 @function borderShadow ($n)
   $value: '0px 0px #{$lineColor}'
   @for $i from 0 through $n

@@ -22,7 +22,26 @@ async function addGuests(req, res) {
         });
         index++;
     }
+    res.setHeader('CSRF-Token', req.csrfToken());
     res.status(200).end('ok');
+}
+
+async function delGuest(req, res) {
+    if(req.params.id) {
+        debug(`Deleting guest with id: ${req.params.id}`);
+        res.setHeader('CSRF-Token', req.csrfToken());
+        let guest = await Guest.findOne({ _id: req.params.id});
+        if (guest) {
+            await guest.remove();
+            return res.status(200).end('ok');
+        } else {
+            debug('ERROR: Guest not found!');
+        }
+    }
+    else {
+        debug('ERROR: Called DELETE without ID');
+    }
+    res.status(404).end('not found');
 }
 
 // Define the guests page route.
@@ -37,9 +56,11 @@ router.get('/',
 
 // /list feeds DataTable in client with data
 router.get('/list',
+    csrfProtection,
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'guests' }),
     async function(req, res) {
+        res.setHeader('CSRF-Token', req.csrfToken());
         res.setHeader('Content-Type', 'application/json');
         let guests = await Guest.find();
         res.end(JSON.stringify({ data: guests.map(g => g.toPOJO()) }));
@@ -51,6 +72,14 @@ router.post('/',
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'guests' }),
     addGuests
+);
+
+// Remove guest
+router.delete('/:id',
+    csrfProtection,
+    Auth.authenticate(false),
+    Auth.authorize('manage', { 'Segment': 'guests' }),
+    delGuest
 );
 
 module.exports = router;

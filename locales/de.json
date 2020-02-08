@@ -20,12 +20,12 @@
     "Add": "Hinzufügen",
     "Abort": "Abbruch",
     "Close": "Schließen",
-    "Invite": "Invite",
-    "years": "years",
+    "Invite": "Einladung",
+    "years": "Jahre",
     "Benny gets 30": "Benny gets 30",
     "And he wants <strong>YOU</strong> to be there ;)": "And he wants <strong>YOU</strong> to be there ;)",
     "If you got an invite please continue to the invite section": "If you got an invite please continue to the invite section",
-    "Error while transmitting data": "Error while transmitting data",
+    "Error while transmitting data": "Fehler beim Senden der Daten",
     "Baby": "Baby",
     "Child": "Kind",
     "Teen": "Jugendlicher",
@@ -34,5 +34,8 @@
     "Senoir": "Senoir",
     "Male": "männlich",
     "Diverse": "divers",
-    "Female": "weiblich"
+    "Female": "weiblich",
+    "Action": "Aktion",
+    "Error while sending request": "Fehler beim Senden der Anfrage",
+    "Delete": "Löschen"
 }

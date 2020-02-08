@@ -7,5 +7,7 @@
     "Group caption": "Gruppierung",
     "Address": "Adresse",
     "Home address": "Heimatadresse",
-    "%s. Guest": "%s. Gast"
+    "%s. Guest": "%s. Gast",
+    "Remove Guest": "Gast löschen",
+    "Remove this guest?": "Diesen Gast entfernen?"
 }

@@ -7,25 +7,27 @@ block content
         a.text-success(href='#', data-toggle='modal', data-target='#addGuestModal')
             i.fas.fa-plus.fa-2x(aria-hidden='true')
     table.data-table.table.table-responsive-md#guestsTable(data-page-length='25',
-                                                            data-group-column='0'
-                                                            data-age-column='2'
-                                                            data-gender-column='3'
+                                                            data-age-column='1'
+                                                            data-gender-column='2'
+                                                            data-action-column='3'
+                                                            data-delete-modal='#deleteGuestModal'
+                                                            data-group-column='4'
                                                             data-order='[[ 1, "asc" ]]',
                                                             data-ajax='/manage/guests/list',
-                                                            data-columns='[{"data": "group"}, {"data": "name"}, {"data": "age"}, {"data": "gender"}]')
+                                                            data-columns='[{"data": "name"},{"data": "age"},{"data": "gender"},{"data": "_id"},{"data": "group"}]')
         thead
             tr
-                th Group
                 th= __('Name')
                 th= __('Age')
                 th= __('Gender')
+                th= __('Action')
+                th Group
 
     +wideModal('addGuestModal',
                 __('Add Guests'),
                 __('Add'),
                 __('Abort'),
                 'addGuestForm',
-                'addGuestError',
                 __('Error while transmitting data'))
         form.endlessInput.ajaxForm#addGuestForm(data-input-template='#inputTemplate',
                                                 data-modal='#addGuestModal',
@@ -33,7 +35,6 @@ block content
                                                 data-redraw-table='#guestsTable'
                                                 method='post',
                                                 action='/manage/guests')
-            input(type='hidden', name='_csrf' value=csrfToken)
             div.form-row
                 div.form-group.col-6.mb-0
                     label(for='group')= __('Group')
@@ -78,3 +79,10 @@ block content
                         label.btn.btn-female.lazy-tooltip(data-toggle='tooltip', title=__('Female'))
                             input(type='radio', name='guest%sgender', value='f', autocomplete='off')
                             i.fas.fa-venus
+
+    +deleteModal('deleteGuestModal',
+                __('Remove Guest'),
+                __('Error while sending request'),
+                '/manage/guests/{id}',
+                '#guestsTable')
+        p= __('Remove this guest?')
