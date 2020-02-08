@@ -2,12 +2,30 @@ const debug = require('debug')('wedical:manage-guests');
 const express = require('express');
 const router = express.Router();
 const csrf = require('csurf');
+const sanitizerExt = require('../../extension/sanitizer-ext');
 const { Auth } = require('../../auth');
 const { addBreadcrump } = require('../../utils');
 var Guest = require('../../models/guest');
 
 // CSRF
 var csrfProtection = csrf();
+
+async function getGuest(req, res) {
+    if (req.params.id) {
+        debug(`Get guest with id: ${req.params.id}`);
+        res.setHeader('CSRF-Token', req.csrfToken());
+        let guest = await Guest.findOne({ _id: req.params.id });
+        if (guest) {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ data: guest.toPOJO() }));
+        } else {
+            debug('ERROR: Guest not found!');
+        }
+    } else {
+        debug('ERROR: Called GET without ID');
+    }
+    res.status(404).end('not found');
+}
 
 async function addGuests(req, res) {
     let index = 1;
@@ -44,6 +62,31 @@ async function delGuest(req, res) {
     res.status(404).end('not found');
 }
 
+async function putGuest(req, res) {
+    if (req.params.id) {
+        debug(`Put guest with id: ${req.params.id}`);
+        res.setHeader('CSRF-Token', req.csrfToken());
+        let guest = await Guest.findOne({ _id: req.params.id });
+        if (guest) {
+            guest.assign(req.body);
+            await guest.save();
+            return res.status(200).end('ok');
+        } else {
+            debug('ERROR: Guest not found!');
+        }
+    } else {
+        debug('ERROR: Called PUT without ID');
+    }
+    res.status(404).end('not found');
+}
+
+async function listGuests(req, res) {
+    res.setHeader('CSRF-Token', req.csrfToken());
+    res.setHeader('Content-Type', 'application/json');
+    let guests = await Guest.find();
+    res.end(JSON.stringify({ data: guests.map(g => g.toPOJO()) }));
+}
+
 // Define the guests page route.
 router.get('/',
     csrfProtection,
@@ -59,12 +102,7 @@ router.get('/list',
     csrfProtection,
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'guests' }),
-    async function(req, res) {
-        res.setHeader('CSRF-Token', req.csrfToken());
-        res.setHeader('Content-Type', 'application/json');
-        let guests = await Guest.find();
-        res.end(JSON.stringify({ data: guests.map(g => g.toPOJO()) }));
-    });
+    listGuests);
 
 // Add guests
 router.post('/',
@@ -80,6 +118,23 @@ router.delete('/:id',
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'guests' }),
     delGuest
+);
+
+// Get guest
+router.get('/:id',
+    csrfProtection,
+    Auth.authenticate(false),
+    Auth.authorize('manage', { 'Segment': 'guests' }),
+    getGuest
+);
+
+// Save guest
+router.put('/:id',
+    csrfProtection,
+    Auth.authenticate(false),
+    Auth.authorize('manage', { 'Segment': 'guests' }),
+    sanitizerExt.removeBody(['_id', 'createdAt', 'updatedAt']),
+    putGuest
 );
 
 module.exports = router;

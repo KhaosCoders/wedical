@@ -9,5 +9,6 @@
     "Home address": "Heimatadresse",
     "%s. Guest": "%s. Gast",
     "Remove Guest": "Gast löschen",
-    "Remove this guest?": "Diesen Gast entfernen?"
+    "Remove this guest?": "Diesen Gast entfernen?",
+    "Edit Guest": "Gast bearbeiten"
 }

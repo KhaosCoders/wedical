@@ -25,19 +25,48 @@
     $('.endlessInput').endlessInput();
 
     // Reset forms in modals
-    $('.modal').on('show.bs.modal', function() {
+    $('.modal.clear-form').on('show.bs.modal', function() {
         $(this).find('form').resetModalForm();
     });
 
-    // AJAX forms
+    // AJAX forms (submit)
     $('form.ajaxForm').each(function() {
         var form = $(this);
         form.ajaxForm({
             headers: { "CSRF-Token": getCSRF() },
+            method: form.attr('method'),
+            beforeSubmit: function(a, $this, options) {
+                options.url = options.url
+                    .replace('{id}', form.data('id'))
+                    .replace('%7Bid%7D', form.data('id'));
+            },
             error: function() { showElement(form.data('error')); },
             success: function() { handleModalSuccess(form); },
             complete: handleCSRF
         });
+    });
+    // AJAX forms (populate/fill)
+    $('form.ajaxForm[data-fill-method]').each(function() {
+        var form = $(this);
+        this.populateForm = function() {
+            $.ajax({
+                headers: { "CSRF-Token": getCSRF() },
+                method: form.data('fillMethod'),
+                url: form.attr('action').replace('{id}', form.data('id')),
+                complete: handleCSRF,
+                error: function(err) { console.log(err); },
+                success: function(data) {
+                    if (data.data) {
+                        for (let [key, value] of Object.entries(data.data)) {
+                            var input = form.find(`[name=${key}]`);
+                            input.not('[type="radio"]').val(value);
+                            input.filter('[type="radio"]').closest('label').removeClass('active');
+                            input.filter(`[type="radio"][value="${value}"]`).closest('label').addClass('active');
+                        }
+                    }
+                }
+            });
+        };
     });
 
     // AJAX buttons
@@ -136,18 +165,28 @@
         // data-action-column
         if (typeof table.data('actionColumn') === 'number') {
             var actionColumn = table.data('actionColumn');
+            var editModal = table.data('editModal');
+            var editForm = table.data('editForm');
             var deleteModal = table.data('deleteModal');
             options.columnDefs.push({
                 "targets": actionColumn,
                 "render": function(data, type, row, meta) {
                     return '<div class="btn-group w-50 action-group">' +
-                        `<button type="button" class="btn btn-s btn-outline-info w-25 rounded-0" data-id="${data}"><i class="fas fa-edit"></i></button>` +
+                        `<button type="button" class="edtbtn btn btn-s btn-outline-info w-25 rounded-0" data-id="${data}"><i class="fas fa-edit"></i></button>` +
                         `<button type="button" class="delbtn btn btn-s btn-outline-danger w-25 rounded-0" data-id="${data}"><i class="fas fa-trash"></i></button>` +
                         '</div>';
                 }
             });
             options.createdRow = function(row, data, index) {
                 $('td', row).eq(actionColumn).addClass('actionColumn');
+                $('button.edtbtn', row).on('click', function() {
+                    $(editModal).modal('toggle');
+                    var form = $(editForm);
+                    form.data('id', $(this).data('id'));
+                    if (form[0].populateForm) {
+                        form[0].populateForm();
+                    }
+                });
                 $('button.delbtn', row).on('click', function() {
                     $(deleteModal).modal('toggle');
                     $(deleteModal + 'Submit').data('id', $(this).data('id'));

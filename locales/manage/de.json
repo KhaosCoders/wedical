@@ -6,5 +6,11 @@
     "Roles": "Rollen",
     "Guests": "Gäste",
     "Logout": "Ausloggen",
-    "Manage": "Verwalten"
+    "Manage": "Verwalten",
+    "Full Name": "Voller Name",
+    "Email": "Email",
+    "Email-Address": "Email-Adresse",
+    "Last Change": "Letzte Änderung",
+    "Phone": "Telefon",
+    "Phone Number": "Telefonnummer"
 }
