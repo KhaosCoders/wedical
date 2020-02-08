@@ -2,6 +2,7 @@ extends manage_layout.pug
 
 include ../includes/_modals.pug
 include ../includes/_icons.pug
+include ../includes/_forms.pug
 
 mixin ageBtn(age, name)
     label.btn.btn-gender-d.lazy-tooltip(data-toggle='tooltip', title=__(ages[age]))
@@ -12,16 +13,6 @@ mixin genderBtn(gender, name)
     label.btn.lazy-tooltip(class=`btn-gender-${gender}`, data-toggle='tooltip', title=__(genders[gender]))
         input(type='radio', name=name, value=gender, autocomplete='off')
         +genderIcon(gender)
-
-mixin editFormGroup(name, label)
-    div.form-group.row
-        label.col-sm-2.col-form-label(for=name)= label
-        div.col-sm-10
-            block
-
-mixin editFormInput(name, label, placeholder)
-    +editFormGroup(name, label)
-        input.form-control(type='text', name=name, placeholder= placeholder)
 
 block content
     span.table-add.float-right.mb-3.mr-2

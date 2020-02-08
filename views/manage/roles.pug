@@ -1,0 +1,76 @@
+extends manage_layout.pug
+
+include ../includes/_modals.pug
+include ../includes/_forms.pug
+
+mixin authorizationFields(suffix)
+    each obj, objKey in authorizationOptions
+        p.h6= __(obj.text)
+        each field, fieldKey in obj.fields
+            p.font-weight-bold= __(field.text)
+            div.container
+                div.row
+                    each optText, optKey in field.options
+                        - var inputName = `r_${objKey}_${fieldKey}_${optKey}_${suffix}`
+                        div.form-check.mx-2
+                            input.form-check-input(type='checkbox',
+                                                name=inputName, id=inputName)
+                            label.form-check-label(for=inputName)= __(optText)
+
+block content
+    span.table-add.float-right.mb-3.mr-2
+        a.text-success(href='#', data-toggle='modal', data-target='#addRoleModal')
+            i.fas.fa-plus.fa-2x(aria-hidden='true')
+    table.data-table.table.table-responsive-md#rolesTable(data-page-length='25',
+                                                        data-action-column='1',
+                                                        data-disable-edit='buildIn'
+                                                        data-edit-btn='#editRoleFormSubmit'
+                                                        data-delete-modal='#deleteRoleModal',
+                                                        data-edit-modal='#editRoleModal',
+                                                        data-edit-form='#editRoleForm',
+                                                        data-order='[[ 0, "asc" ]]',
+                                                        data-ajax='/manage/roles/list',
+                                                        data-columns='[{"data": "name"},{"data": "_id"}]')
+        thead
+            tr
+                th= __('Name')
+                th= __('Action')
+
+    +modal('addRoleModal',
+                __('Add Role'),
+                __('Add'),
+                __('Abort'),
+                'addUserForm',
+                __('Error while transmitting data'))(class='clear-form')
+        form.ajaxForm#addUserForm(data-modal='#addRoleModal',
+                                data-error='#addRoleModalError',
+                                data-redraw-table='#rolesTable'
+                                method='post',
+                                action='/manage/roles')
+            +editFormInput('name', __('Name'), __('Role Name'), true)
+            +editFormGroup('rights', __('Rights'))
+                +authorizationFields('n')
+
+    +deleteModal('deleteRoleModal',
+                __('Remove Role'),
+                __('Error while sending request'),
+                '/manage/roles/{id}',
+                '#rolesTable')
+        p= __('Remove this role?')
+
+    +modal('editRoleModal',
+            __('Edit Role'),
+            __('Save'),
+            __('Abort'),
+            'editRoleForm',
+            __('Error while transmitting data'),
+            'editRoleFormSubmit')
+        form.ajaxForm#editRoleForm(data-modal='#editRoleModal',
+                                    data-error='#editRoleModalError',
+                                    data-redraw-table='#rolesTable',
+                                    data-fill-method='GET'
+                                    method='PUT',
+                                    action='/manage/roles/{id}')
+            +editFormInput('name', __('Name'), __('Role Name'), true)
+            +editFormGroup('rights', __('Rights'))
+                +authorizationFields('e')

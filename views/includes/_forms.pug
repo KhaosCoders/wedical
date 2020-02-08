@@ -1,0 +1,12 @@
+mixin editFormGroup(name, label)
+    div.form-group.row
+        label.col-sm-2.col-form-label(for=name)= label
+        div.col-sm-10
+            block
+
+mixin editFormInput(name, label, placeholder, required=false)
+    +editFormGroup(name, label)
+        if required
+            input.form-control(type='text', name=name, placeholder= placeholder, required)
+        else
+            input.form-control(type='text', name=name, placeholder= placeholder)

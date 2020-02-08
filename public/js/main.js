@@ -57,8 +57,12 @@
                 error: function(err) { console.log(err); },
                 success: function(data) {
                     form.find('input[type="radio"]').closest('label').removeClass('active');
+                    form.find('input[type="checkbox"]').prop("checked", false);
                     if (data.data) {
                         for (let [key, value] of Object.entries(data.data)) {
+                            if (key === 'auth') {
+                                continue;
+                            }
                             var inputs = form.find(`[name=${key}]`);
                             inputs.not('[type="radio"]').each(function() {
                                 var input = $(this);
@@ -73,6 +77,24 @@
                                 input.val(value);
                             });
                             inputs.filter(`[type="radio"][value="${value}"]`).closest('label').addClass('active');
+                        }
+                        // set checkboxes in roles dialogs
+                        if (data.data.auth) {
+                            let checkboxes = form.find('input[type="checkbox"]');
+                            for (let authObj of data.data.auth) {
+                                console.log(authObj);
+                                for (let [fieldKey, fieldValues] of Object.entries(authObj.AuthFieldValue)) {
+                                    for (let option of fieldValues) {
+                                        let chkName = `r_${authObj.AuthObject}_${fieldKey}_${option}`;
+                                        checkboxes.each(function() {
+                                            let chk = $(this);
+                                            if (chk.attr('name').startsWith(chkName)) {
+                                                chk.prop("checked", true);
+                                            }
+                                        });
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -179,21 +201,28 @@
             var editModal = table.data('editModal');
             var editForm = table.data('editForm');
             var deleteModal = table.data('deleteModal');
+            var disableEdit = table.data('disableEdit');
+            var editBtn = table.data('editBtn');
             options.columnDefs.push({
                 "targets": actionColumn,
                 "render": function(data, type, row, meta) {
-                    return '<div class="btn-group w-50 action-group">' +
-                        `<button type="button" class="edtbtn btn btn-s btn-outline-info w-25 rounded-0" data-id="${data}"><i class="fas fa-edit"></i></button>` +
-                        `<button type="button" class="delbtn btn btn-s btn-outline-danger w-25 rounded-0" data-id="${data}"><i class="fas fa-trash"></i></button>` +
+                    return '<div class="btn-group w-100 action-group">' +
+                        `<button type="button" class="edtbtn btn btn-s btn-outline-info w-50 rounded-0" data-id="${data}" ${disableEdit && row[disableEdit] ? 'data-disabled="yes"' : ''}><i class="fas fa-edit"></i></button>` +
+                        `<button type="button" class="delbtn btn btn-s btn-outline-danger w-50 rounded-0" data-id="${data}" ${disableEdit && row[disableEdit] ? 'disabled' : ''}><i class="fas fa-trash"></i></button>` +
                         '</div>';
                 }
             });
             options.createdRow = function(row, data, index) {
                 $('td', row).eq(actionColumn).addClass('actionColumn');
                 $('button.edtbtn', row).on('click', function() {
+                    let btn = $(this);
+                    if (disableEdit && editBtn) {
+                        $(editBtn).attr('disabled', btn.data('disabled') === 'yes');
+                    }
+
                     $(editModal).modal('toggle');
                     var form = $(editForm);
-                    form.data('id', $(this).data('id'));
+                    form.data('id', btn.data('id'));
                     if (form[0].populateForm) {
                         form[0].populateForm();
                     }

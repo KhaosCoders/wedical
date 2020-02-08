@@ -41,7 +41,10 @@ class Guest extends Model {
 
 Guest.use(Timestamps);
 
+// all possible genders
 Guest.genders = { 'undefined': 'Undefined', 'm': 'Male', 'd': 'Diverse', 'f': 'Female' };
+
+// all possible ages
 Guest.ages = { 'undefined': 'Undefined', 'baby': 'Baby', 'child': 'Child', 'teen': 'Teen', 'youndAdult': 'Young Adult', 'adult': 'Adult', 'senior': 'Senoir' };
 
 module.exports = Guest;
