@@ -9,6 +9,7 @@ const { Strategies } = require('../auth-utils');
  * Model for website users
  *
  * Properties:
+ * - name
  * - email
  * - strategy
  * - roles
@@ -37,6 +38,7 @@ class User extends Model {
     static defaults() {
         return extend(true, super.defaults(), {
             values: {
+                name: '',
                 email: '',
                 strategy: Strategies.UNKNOWN,
                 roles: [],

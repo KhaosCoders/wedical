@@ -44,4 +44,22 @@ class Role extends Model {
 
 Role.use(Timestamps);
 
+// all possible authorizations
+Role.authorizationOptions = {
+    'manage': {
+        'text': 'Manage',
+        'fields': {
+            'Segment': {
+                'text': 'Segment',
+                'options': {
+                    'guests': 'Guests',
+                    'invites': 'Invites',
+                    'users': 'Users',
+                    'roles': 'Roles',
+                },
+            },
+        },
+    },
+}
+
 module.exports = Role;

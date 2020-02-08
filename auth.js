@@ -210,6 +210,7 @@ class Auth {
         if (!admin) {
             debug('create admin user');
             admin = await User.create({
+                name: 'Administrator',
                 email: config.admin.email,
                 roles: ['Admin'],
             });
@@ -251,13 +252,26 @@ class Auth {
                             }
                         });
                     });
+            } else {
+                Auth.grant(role, authObj, authFields);
+                await role.save();
             }
         };
         // Default roles
         await createRole('Guest');
-        await createRole('Admin', 'manage', {
-            'Segment': ['guests', 'invites', 'users'],
-        });
+
+        // Ensure Admin role with all possible rights
+        for (var [objKey, obj] of Object.entries(Role.authorizationOptions)) {
+            let fields = {};
+            for (var [fieldKey, field] of Object.entries(obj.fields)) {
+                let options = [];
+                for (var [optKey, objText] of Object.entries(field.options)) {
+                    options.push(optKey);
+                }
+                fields[fieldKey] = options;
+            }
+            await createRole('Admin', objKey, fields);
+        }
     }
 
     /**
