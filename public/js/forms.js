@@ -1,18 +1,30 @@
 (function($) {
     /**
      * @summary
-     * Clears the state (data/validation/erros) of a form
+     * Clears the fields of a form
+     */
+    $.fn.resetFormFields = function() {
+        return this.each(function() {
+            $(this).clearForm();
+        });
+    };
+
+    /**
+     * @summary
+     * Clears the state (validation/erros) of a form
      */
     $.fn.resetFormState = function() {
         return this.each(function() {
             var form = $(this);
-            form.clearForm();
             if (form.data('error')) {
                 $(form.data('error')).hide();
             }
             // reset validation results
             form.removeClass('was-validated');
-            form.find('input').each(function() { this.setCustomValidity(""); });
+            form.find('input').each(function() {
+                this.setCustomValidity("");
+                $(this).removeClass('is-valid').removeClass('is-invalid');
+            });
         });
     };
 
@@ -48,11 +60,11 @@
             var handleComplete = handleCSRF;
             if (form.hasClass('needs-validation')) {
                 handleError = function(result) {
-                    if (result.responseJSON.errors) {
+                    if (result.responseJSON && result.responseJSON.errors) {
                         for (let error of result.responseJSON.errors) {
                             form.find(`[name="${error.param}"]`).each(function() {
-                                $(this).addClass('is-invalid');
-                                //this.setCustomValidity(error.msg);
+                                $(this).removeClass('is-valid').addClass('is-invalid');
+                                this.setCustomValidity(error.msg);
                             });
                         }
                     } else {
@@ -63,11 +75,16 @@
                     handleCSRF(jqXHR);
                     form.addClass('was-validated');
                 }
+                form.find('input').on('change', function() {
+                    this.setCustomValidity('');
+                    $(this).removeClass('is-valid').removeClass('is-invalid');
+                });
             }
             form.ajaxForm({
                 headers: { "CSRF-Token": getCSRF() },
                 method: form.attr('method'),
                 beforeSubmit: function(a, $this, options) {
+                    form.resetFormState();
                     options.url = options.url
                         .replace('{id}', form.data('id'))
                         .replace('%7Bid%7D', form.data('id'));

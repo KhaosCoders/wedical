@@ -13,6 +13,7 @@
                 var form = $(this).find('form');
                 form.resetEndlessForm()
                 form.resetFormState();
+                form.resetFormFields();
             });
         });
     };
