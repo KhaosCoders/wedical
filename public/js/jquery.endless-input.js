@@ -6,9 +6,13 @@
             var defaultCounter = parseInt(container.data('startIndex') || '1');
             var counter = defaultCounter;
 
+            // remove template from DOM, so it isn't submitted with form
+            var template = $(templateSelector).clone(true);
+            $(templateSelector).remove();
+
             // function to add a new input group
             var addFields = function() {
-                var group = $(templateSelector).clone(true);
+                var group = template.clone(true);
                 var index = counter++;
 
                 var replaceIndex = function(element, attribute) {
