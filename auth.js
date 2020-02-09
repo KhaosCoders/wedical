@@ -42,15 +42,14 @@ class Auth {
         user.roles = user.roles ? user.roles : [];
         let userProfiles = [];
         // Merge all profiles from rules
-        for (let roleName of user.roles) {
-            await Role.findOne({ name: roleName })
+        for (let roleId of user.roles) {
+            await Role.findOne({ _id: roleId })
                 .then(function(role, err) {
                     if (role) {
                         userProfiles.push(role.auth);
                     }
                 });
         }
-
         // compile profile
         user.authProfile = compileProfile(userProfiles);
     }
@@ -212,7 +211,7 @@ class Auth {
             admin = await User.create({
                 name: 'Administrator',
                 email: config.admin.email,
-                roles: ['Admin'],
+                roles: [(await Role.findOne({ name: 'Admin' }))._id],
             });
             admin.setLocalPw(config.admin.passwd);
 

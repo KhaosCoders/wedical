@@ -4,6 +4,7 @@ const { Auth } = require('../../auth');
 const { addBreadcrump } = require('../../utils');
 const dataExt = require('../../extension/data-ext');
 var Guest = require('../../models/guest');
+var User = require('../../models/user');
 
 // Manage bread crump
 var breadcrump = addBreadcrump('Manage', '/manage');
@@ -22,11 +23,15 @@ router.get('/',
             guestCount: allGuests.length,
             guestGenders: genders,
             guestAges: ages,
+            userCount: await User.count(),
         });
     });
 
 // load guests routes (auth is handled inside!)
 router.use('/guests', breadcrump, require('./guests'));
 
+// load users routes (auth is handled inside!)
+router.use('/users', breadcrump, require('./users'));
+router.use('/roles', breadcrump, require('./roles'));
 
 module.exports = router;

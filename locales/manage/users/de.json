@@ -1,1 +1,8 @@
-{}
+{
+    "Enter a strong password": "Gib ein sicheres Passwort ein",
+    "Repeat the password": "Wiederhole das Passwort",
+    "Add User": "Benutzer hinzufügen",
+    "Edit User": "Benutzer bearbeiten",
+    "Remove User": "Benutzer löschen",
+    "Remove this user?": "Diesen Benutzer entfernen?"
+}

@@ -60,7 +60,7 @@
                     form.find('input[type="checkbox"]').prop("checked", false);
                     if (data.data) {
                         for (let [key, value] of Object.entries(data.data)) {
-                            if (key === 'auth') {
+                            if (key === 'auth' || key === 'roles') {
                                 continue;
                             }
                             var inputs = form.find(`[name=${key}]`);
@@ -94,6 +94,19 @@
                                         });
                                     }
                                 }
+                            }
+                        }
+                        // set checkboxes in roles dialogs
+                        if (data.data.roles) {
+                            let checkboxes = form.find('input[type="checkbox"]');
+                            for (let roleId of data.data.roles) {
+                                let chkName = `r_${roleId}`;
+                                checkboxes.each(function() {
+                                    let chk = $(this);
+                                    if (chk.attr('name').startsWith(chkName)) {
+                                        chk.prop("checked", true);
+                                    }
+                                });
                             }
                         }
                     }

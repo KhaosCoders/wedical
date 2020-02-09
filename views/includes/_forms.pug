@@ -7,6 +7,6 @@ mixin editFormGroup(name, label)
 mixin editFormInput(name, label, placeholder, required=false, type='text')
     +editFormGroup(name, label)
         if required
-            input.form-control(type=type, name=name, placeholder= placeholder, required)
+            input.form-control(type=type, name=name, placeholder= placeholder, required, autocomplete='off')
         else
-            input.form-control(type=type, name=name, placeholder= placeholder)
+            input.form-control(type=type, name=name, placeholder= placeholder, autocomplete='off')

@@ -35,6 +35,7 @@ block content
       +tile('fa-envelope-open-text', __('Invitations'), '/manage/invites')
   hr
   h2= __('Users')
+    span.badge.badge-secondary.mx-2= userCount
   div.container.my-2
     div.row
       +tile('fa-users-cog', __('Users'), '/manage/users')

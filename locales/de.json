@@ -12,5 +12,7 @@
     "Full Name": "Voller Name",
     "Email": "Email",
     "Phone": "Telefon",
-    "Undefined": "Nicht definiert"
+    "Undefined": "Nicht definiert",
+    "Password": "Passwort",
+    "Repeat": "Wiederhol."
 }

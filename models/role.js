@@ -40,6 +40,14 @@ class Role extends Model {
         });
     }
 
+    static async dictionary(key, value) {
+        let roles = await Role.find();
+        let dict = {};
+        for (let role of roles) {
+            dict[role[key]] = role[value];
+        }
+        return dict;
+    }
 }
 
 Role.use(Timestamps);
