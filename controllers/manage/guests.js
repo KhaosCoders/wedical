@@ -2,6 +2,7 @@ const debug = require('debug')('wedical:manage-guests');
 const express = require('express');
 const router = express.Router();
 const csrf = require('csurf');
+const { check, validationResult } = require('express-validator');
 const reqSanitizer = require('../../extension/request-sanitizer');
 const { Auth } = require('../../auth');
 const { addBreadcrump } = require('../../utils');
@@ -28,41 +29,58 @@ async function getGuest(req, res) {
 }
 
 async function addGuests(req, res) {
-    let index = 1;
-    while (req.body[`guest${index}name`]) {
-        debug(`Add guest: ${req.body[`guest${index}name`]}`);
-        await Guest.create({
-            name: req.body[`guest${index}name`],
-            age: req.body[`guest${index}age`],
-            gender: req.body[`guest${index}gender`],
-            group: req.body.group,
-            address: req.body.address,
-        });
-        index++;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
+    for (let key of Object.keys(req.body)) {
+        if (!key.startsWith('guest') || !key.endsWith('name')) {
+            continue;
+        }
+        let index = parseInt(key.substr(5, key.length - 9));
+        if (index === NaN) {
+            continue;
+        }
+        let name = req.body[`guest${index}name`].trim();
+        if (name) {
+            debug(`Add guest: ${name}`);
+            await Guest.create({
+                name: name,
+                age: req.body[`guest${index}age`],
+                gender: req.body[`guest${index}gender`],
+                group: req.body.group,
+                address: req.body.address,
+            });
+        }
     }
     res.setHeader('CSRF-Token', req.csrfToken());
     res.status(200).end('ok');
 }
 
 async function delGuest(req, res) {
-    if(req.params.id) {
+    if (req.params.id) {
         debug(`Deleting guest with id: ${req.params.id}`);
         res.setHeader('CSRF-Token', req.csrfToken());
-        let guest = await Guest.findOne({ _id: req.params.id});
+        let guest = await Guest.findOne({ _id: req.params.id });
         if (guest) {
             await guest.remove();
             return res.status(200).end('ok');
         } else {
             debug('ERROR: Guest not found!');
         }
-    }
-    else {
+    } else {
         debug('ERROR: Called DELETE without ID');
     }
     res.status(404).end('not found');
 }
 
 async function putGuest(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
     if (req.params.id) {
         debug(`Put guest with id: ${req.params.id}`);
         res.setHeader('CSRF-Token', req.csrfToken());
@@ -134,6 +152,7 @@ router.put('/:id',
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'guests' }),
     reqSanitizer.removeBody(['_id', 'createdAt', 'updatedAt']),
+    check('name').notEmpty(),
     putGuest
 );
 

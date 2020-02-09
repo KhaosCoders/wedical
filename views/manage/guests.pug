@@ -49,7 +49,7 @@ block content
                 __('Abort'),
                 'addGuestForm',
                 __('Error while transmitting data'))(class='clear-form')
-        form.endlessInput.ajaxForm#addGuestForm(data-input-template='#inputTemplate',
+        form.endlessInput.ajaxForm.needs-validation#addGuestForm(data-input-template='#inputTemplate',
                                                 data-modal='#addGuestModal',
                                                 data-error='#addGuestModalError',
                                                 data-redraw-table='#guestsTable'
@@ -92,13 +92,13 @@ block content
             __('Abort'),
             'editGuestForm',
             __('Error while transmitting data'))(class='clear-form')
-        form.ajaxForm#editGuestForm(data-modal='#editGuestModal',
+        form.ajaxForm.needs-validation#editGuestForm(data-modal='#editGuestModal',
                                     data-error='#editGuestModalError',
                                     data-redraw-table='#guestsTable',
                                     data-fill-method='GET'
                                     method='PUT',
                                     action='/manage/guests/{id}')
-            +editFormInput('name', __('Name'), __('Full Name'))
+            +editFormInput('name', __('Name'), __('Full Name'), true, __('This field is required'))
             +editFormInput('email', __('Email'), __('Email-Address'), false, '', 'email')
             +editFormInput('phone', __('Phone'), __('Phone Number'), false, '', 'tel')
             +editFormInput('group', __('Group'), __('Group caption'))

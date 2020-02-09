@@ -45,12 +45,12 @@ block content
                 __('Abort'),
                 'addUserForm',
                 __('Error while transmitting data'))(class='clear-form')
-        form.ajaxForm#addUserForm(data-modal='#addRoleModal',
+        form.ajaxForm.needs-validation#addUserForm(data-modal='#addRoleModal',
                                 data-error='#addRoleModalError',
                                 data-redraw-table='#rolesTable'
                                 method='post',
                                 action='/manage/roles')
-            +editFormInput('name', __('Name'), __('Role Name'), true)
+            +editFormInput('name', __('Name'), __('Role Name'), true, __('This name is already in use'))
             +editFormGroup('rights', __('Rights'))
                 +authorizationFields('n')
 
@@ -67,13 +67,13 @@ block content
             __('Abort'),
             'editRoleForm',
             __('Error while transmitting data'))(class='clear-form')
-        form.ajaxForm#editRoleForm(data-modal='#editRoleModal',
+        form.ajaxForm.needs-validation#editRoleForm(data-modal='#editRoleModal',
                                     data-error='#editRoleModalError',
                                     data-redraw-table='#rolesTable',
                                     data-fill-method='GET'
                                     method='PUT',
                                     action='/manage/roles/{id}')
-            +editFormInput('name', __('Name'), __('Role Name'), true)
+            +editFormInput('name', __('Name'), __('Role Name'), true, __('This name is already in use'))
             +editFormGroup('rights', __('Rights'))
                 +authorizationFields('e')
                 div.alert.alert-info= __('Changing roles takes effect only after a fresh login')

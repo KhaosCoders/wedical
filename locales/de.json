@@ -18,5 +18,6 @@
     "This field is required": "Dieses Feld wird benötigt",
     "Not a valid email address": "Keine zulässige Email-Adresse",
     "Not a valid password": "Kein zulässiges Passwort",
-    "Passwords don't match": "Passwörter stimmen nicht überein"
+    "Passwords don't match": "Passwörter stimmen nicht überein",
+    "This name is already in use": "Dieser Name wird bereits verwendet"
 }

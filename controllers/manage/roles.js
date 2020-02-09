@@ -2,6 +2,7 @@ const debug = require('debug')('wedical:manage-roles');
 const express = require('express');
 const router = express.Router();
 const csrf = require('csurf');
+const { check, validationResult } = require('express-validator');
 const reqSanitizer = require('../../extension/request-sanitizer');
 const { Auth } = require('../../auth');
 const { addBreadcrump } = require('../../utils');
@@ -9,6 +10,21 @@ var Role = require('../../models/role');
 
 // CSRF
 var csrfProtection = csrf();
+
+/**
+ * Checks if a role name is already taken
+ * @param {any} value
+ * @param {Object} param1
+ */
+async function checkRoleExists(value, { req }) {
+    value = value.trim();
+    let role = await Role.findOne({ name: value });
+    // Unkown name, or name of same role
+    let valid = !role || role._id == req.params.id;
+    if (!valid) {
+        throw new Error('Name is already in use');
+    }
+}
 
 async function getRole(req, res) {
     if (req.params.id) {
@@ -28,6 +44,11 @@ async function getRole(req, res) {
 }
 
 async function addRole(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
     // Create new role
     let role = await Role.create({
         name: req.body[`name`],
@@ -75,6 +96,11 @@ async function delRole(req, res) {
 }
 
 async function putRole(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
     if (req.params.id) {
         debug(`Put role with id: ${req.params.id}`);
         res.setHeader('CSRF-Token', req.csrfToken());
@@ -131,6 +157,7 @@ router.post('/',
     csrfProtection,
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'roles' }),
+    check('name').notEmpty().bail().custom(checkRoleExists),
     addRole
 );
 
@@ -156,6 +183,7 @@ router.put('/:id',
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'roles' }),
     reqSanitizer.removeBody(['_id', 'createdAt', 'updatedAt']),
+    check('name').notEmpty().bail().custom(checkRoleExists),
     putRole
 );
 
