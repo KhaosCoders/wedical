@@ -57,16 +57,28 @@ app.use(flash());
 app.use('/js/jquery.min.js',
     express.static(__dirname +
         '/node_modules/jquery/dist/jquery.min.js'));
+app.use('/js/jquery.min.js.map',
+    express.static(__dirname +
+        '/node_modules/jquery/dist/jquery.min.js.map'));
 app.use('/js/jquery.form.min.js',
     express.static(__dirname +
         '/node_modules/jquery-form/dist/jquery.form.min.js'));
+app.use('/js/jquery.form.min.js.map',
+    express.static(__dirname +
+        '/node_modules/jquery-form/dist/jquery.form.min.js.map'));
 // Bootstrap
 app.use('/js/bootstrap.bundle.min.js',
     express.static(__dirname +
         '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'));
+app.use('/js/bootstrap.bundle.min.js.map',
+    express.static(__dirname +
+        '/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js.map'));
 app.use('/styles/bootstrap.min.css',
     express.static(__dirname +
         '/node_modules/bootstrap/dist/css/bootstrap.min.css'));
+app.use('/styles/bootstrap.min.css.map',
+    express.static(__dirname +
+        '/node_modules/bootstrap/dist/css/bootstrap.min.css.map'));
 // eruda (mobile js debugger)
 app.use('/js/eruda.js',
     express.static(__dirname +
