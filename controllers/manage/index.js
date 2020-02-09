@@ -26,11 +26,17 @@ router.get('/',
             userCount: await User.count(),
         });
     });
-
-// load guests routes (auth is handled inside!)
+/*
+ * Setup sub-page routes
+ * (auth is handled inside!)
+ */
+// manage guests routes
 router.use('/guests', breadcrump, require('./guests'));
 
-// load users routes (auth is handled inside!)
+// manage invites routes
+router.use('/invites', breadcrump, require('./invites'));
+
+// manage users & routes routes
 router.use('/users', breadcrump, require('./users'));
 router.use('/roles', breadcrump, require('./roles'));
 
