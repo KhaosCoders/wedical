@@ -28,7 +28,13 @@ block content
                                                         data-group-column='4'
                                                         data-order='[[ 1, "asc" ]]',
                                                         data-ajax='/manage/guests/list',
-                                                        data-columns='[{"data": "name"},{"data": "age"},{"data": "gender"},{"data": "_id"},{"data": "group"}]')
+                                                        data-columns='[{"data": "name"},{"data": "age", "className": "dt-body-center"},{"data": "gender", "className": "dt-body-center"},{"data": "_id"},{"data": "group"}]')
+        colgroup
+            col(width='100%')
+            col(width='1')
+            col(width='1')
+            col(width='1')
+            col(width='1')
         thead
             tr
                 th= __('Name')
