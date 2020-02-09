@@ -4,6 +4,7 @@ const extend = require('extend');
 const crypto = require('crypto');
 const { Model, Timestamps } = require('nedb-models');
 const { Strategies } = require('../auth-utils');
+const ModelSanitizer = require('../extension/model-sanitizer');
 
 /**
  * Model for website users
@@ -47,6 +48,13 @@ class User extends Model {
     }
 
     /**
+     * Sanitize model data before storing them
+     */
+    sanitize() {
+        this.email = this.email.toLowerCase();
+    }
+
+    /**
      * Marks the user as local user account (not third party)
      * @param {string} password - password
      */
@@ -70,5 +78,6 @@ class User extends Model {
 }
 
 User.use(Timestamps);
+User.use(ModelSanitizer);
 
 module.exports = User;

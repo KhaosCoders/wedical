@@ -142,6 +142,7 @@ class Auth {
                 passwordField: 'password'
             },
             function(username, password, done) {
+                username = username.toLowerCase();
                 debug(`Local user: ${username} pw(len):${password.length}`);
                 User.findOne({ email: username }).then(async function(user, err) {
                     if (err) {

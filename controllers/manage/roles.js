@@ -2,7 +2,7 @@ const debug = require('debug')('wedical:manage-roles');
 const express = require('express');
 const router = express.Router();
 const csrf = require('csurf');
-const sanitizerExt = require('../../extension/sanitizer-ext');
+const reqSanitizer = require('../../extension/request-sanitizer');
 const { Auth } = require('../../auth');
 const { addBreadcrump } = require('../../utils');
 var Role = require('../../models/role');
@@ -155,7 +155,7 @@ router.put('/:id',
     csrfProtection,
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'roles' }),
-    sanitizerExt.removeBody(['_id', 'createdAt', 'updatedAt']),
+    reqSanitizer.removeBody(['_id', 'createdAt', 'updatedAt']),
     putRole
 );
 

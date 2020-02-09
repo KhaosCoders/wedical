@@ -1,5 +1,5 @@
 module.exports = (function() {
-    var sanitizerExt = {};
+    var reqSanitizer = {};
 
     /**
      * Removes a value from the request body
@@ -25,7 +25,7 @@ module.exports = (function() {
             next();
         };
     };
-    sanitizerExt.removeBody = removeBody;
+    reqSanitizer.removeBody = removeBody;
 
-    return sanitizerExt;
+    return reqSanitizer;
 })();

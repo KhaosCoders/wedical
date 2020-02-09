@@ -2,7 +2,7 @@ const debug = require('debug')('wedical:manage-guests');
 const express = require('express');
 const router = express.Router();
 const csrf = require('csurf');
-const sanitizerExt = require('../../extension/sanitizer-ext');
+const reqSanitizer = require('../../extension/request-sanitizer');
 const { Auth } = require('../../auth');
 const { addBreadcrump } = require('../../utils');
 var Guest = require('../../models/guest');
@@ -133,7 +133,7 @@ router.put('/:id',
     csrfProtection,
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'guests' }),
-    sanitizerExt.removeBody(['_id', 'createdAt', 'updatedAt']),
+    reqSanitizer.removeBody(['_id', 'createdAt', 'updatedAt']),
     putGuest
 );
 
