@@ -3,17 +3,17 @@ extends login_layout.pug
 block content
   div.card.bg-light
     div.card-header
-      h2 Login
+      h2= __('Login')
     div.card-body
       form(method='post', action='/login')
         input(type='hidden', name='_csrf' value=csrfToken)
         input(type='hidden', name='redirect_url', value=query.redirect_url)
         div.form-group.row
-          label.col-sm-3.col-form-label(for='email') Email
+          label.col-sm-3.col-form-label(for='email')= __('Email')
           div.col-sm-9
             input.form-control#email(type='email', name='email', placeholder='example@web.com')
         div.form-group.row
-          label.col-sm-3.col-form-label(for='password') Password
+          label.col-sm-3.col-form-label(for='password')= __('Password')
           div.col-sm-9
             input.form-control#password(type='password', name='password', placeholder='****')
         if Object.entries(errors).length !== 0
@@ -29,4 +29,4 @@ block content
                     = err.msg
         div.form-group.row
           div.col-sm-4.offset-sm-8
-            button.btn.btn-info.w-100(type='submit') Login
+            button.btn.btn-info.w-100(type='submit')= __('Login')
