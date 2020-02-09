@@ -19,7 +19,7 @@
         "datatables.net-bs4": "^1.10.20",
         "datatables.net-dt": "^1.10.20",
         "debug": "~4.1.1",
-        "eruda": "^1.10.3",
+        "eruda": "^2.2.0",
         "express": "~4.17.1",
         "express-session": "^1.17.0",
         "express-validator": "^6.4.0",
@@ -51,7 +51,7 @@
         "nodemon": "^2.0.2",
         "pug-lint": "^2.6.0",
         "pug-lint-config-clock": "^2.0.0",
-        "stylelint": "^13.0.0",
-        "stylelint-config-standard": "^19.0.0"
+        "stylelint": "^13.1.0",
+        "stylelint-config-standard": "^20.0.0"
     }
 }
