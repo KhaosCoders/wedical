@@ -14,5 +14,9 @@
     "Phone": "Telefon",
     "Undefined": "Nicht definiert",
     "Password": "Passwort",
-    "Repeat": "Wiederhol."
+    "Repeat": "Wiederhol.",
+    "This field is required": "Dieses Feld wird benötigt",
+    "Not a valid email address": "Keine zulässige Email-Adresse",
+    "Not a valid password": "Kein zulässiges Passwort",
+    "Passwords don't match": "Passwörter stimmen nicht überein"
 }

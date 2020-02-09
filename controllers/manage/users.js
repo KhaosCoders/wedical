@@ -12,6 +12,21 @@ var User = require('../../models/user');
 // CSRF
 var csrfProtection = csrf();
 
+/**
+ * Checks if a email is already taken
+ * @param {any} value
+ * @param {Object} param1
+ */
+async function checkEmailExists(value, { req }) {
+    value = value.trim().toLowerCase();
+    let user = await User.findOne({ email: value });
+    // Unkown email, or email of same user
+    let valid = !user || user._id == req.params.id;
+    if (!valid) {
+        throw new Error('Email is already in use');
+    }
+}
+
 async function getUser(req, res) {
     if (req.params.id) {
         debug(`Get user with id: ${req.params.id}`);
@@ -159,9 +174,9 @@ router.post('/',
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'users' }),
     check('name').notEmpty(),
-    check('email').isEmail(),
     check('password').notEmpty(),
     check('password2').custom((value, { req }) => value === req.body.password).withMessage('Passwords don\'t match'),
+    check('email').isEmail().bail().custom(checkEmailExists),
     addUser
 );
 
@@ -188,8 +203,8 @@ router.put('/:id',
     Auth.authorize('manage', { 'Segment': 'users' }),
     reqSanitizer.removeBody(['_id', 'createdAt', 'updatedAt']),
     check('name').notEmpty(),
-    check('email').isEmail(),
     check('password2').if((value, { req }) => req.body.password).custom((value, { req }) => value === req.body.password).withMessage('Passwords don\'t match'),
+    check('email').isEmail().bail().custom(checkEmailExists),
     putUser
 );
 

@@ -51,7 +51,8 @@ class User extends Model {
      * Sanitize model data before storing them
      */
     sanitize() {
-        this.email = this.email.toLowerCase();
+        this.email = this.email.trim().toLowerCase();
+        this.name = this.name.trim();
     }
 
     /**
