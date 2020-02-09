@@ -46,16 +46,9 @@
         });
     };
 
-    $.fn.resetModalForm = function() {
-        this.filter('.endlessInputEnabled').each(function() {
+    $.fn.resetEndlessForm = function() {
+        return this.filter('.endlessInputEnabled').each(function() {
             this.resetEndlessInputs();
-        });
-        return this.each(function() {
-            var form = $(this);
-            form.clearForm();
-            if (form.data('error')) {
-                $(form.data('error')).hide();
-            }
         });
     };
 })(jQuery);
