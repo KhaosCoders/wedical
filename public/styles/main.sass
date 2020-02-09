@@ -7,6 +7,7 @@ body
   height: 99%!important
   font-family: "Lucida Grande", Helvetica, Arial, sans-serif
   background: radial-gradient(ellipse at bottom, $pageBgStart 0%, $pageBgStop 100%)
+  background-size: 20px 20px
 
 main
   position: relative
@@ -30,6 +31,18 @@ td.actionColumn div.action-group
   top: -1px
   height: 104%
 
+.paginate_button
+  padding: 0 !important
+  margin: 0 !important
+  border: 0 !important
+
+.paginate_button:hover
+  background: transparent !important
+  border: 0 !important
+
+.dataTables_paginate
+  padding-bottom: 0.25em
+
 // Grid background pattern
 @function borderShadow ($n)
   $value: '0px 0px #{$lineColor}'
@@ -37,24 +50,9 @@ td.actionColumn div.action-group
     $value: '#{$value} , 0px #{($step)*$i}px #{$lineColor}'
   @return unquote($value)
 
-@function stripeShadow ($n)
-  $value: '0px 0px #{$lineColor}'
-  @for $i from 0 through $n
-    $value: '#{$value} , #{($step)*$i}px 0px #{$lineColor}'
-
-  @return unquote($value)
-
 $border:  borderShadow(1000)
-$stripe:  stripeShadow(1000)
 
 #grid
   width: 100%
   height: $borderWeight
   box-shadow: $border
-
-  &:after
-    content: ""
-    position: absolute
-    width: $borderWeight
-    height: 100%
-    box-shadow: $stripe
