@@ -1,4 +1,14 @@
 const debug = require('debug')('wedical:app');
+const fs = require('fs');
+
+// Abort when config is missing
+let app = null;
+if (!fs.existsSync(__dirname + '/config.js')) {
+    console.log('Please setup config.js first!');
+    module.exports = app;
+    return;
+}
+
 const createError = require('http-errors');
 const express = require('express');
 const helmet = require('helmet');
@@ -9,7 +19,6 @@ const sassMiddleware = require('node-sass-middleware');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const i18n = require('i18n');
-const fs = require('fs');
 const { Auth } = require('./auth');
 const i18nExt = require('./extension/i18n-ext');
 var Guest = require('./models/guest');
@@ -20,7 +29,7 @@ Auth.setupAdmin();
 
 // express app setup
 debug('begin app setup');
-let app = express();
+app = express();
 
 // use morgan logger
 app.use(logger('dev'));
