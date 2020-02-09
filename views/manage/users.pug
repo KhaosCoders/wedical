@@ -47,6 +47,7 @@ block content
             +editFormInput('password', __('Password'), __('Enter a strong password'), true, 'password')
             +editFormInput('password2', __('Repeat'), __('Repeat the password'), true, 'password')
             +editFormGroup('roles', __('Roles'))
+                p.font-weight-bold= __('User Roles')
                 +userRoles('n')
 
     +deleteModal('deleteUserModal',
@@ -73,4 +74,6 @@ block content
             +editFormInput('password', __('Password'), __('Enter a strong password'), false, 'password')
             +editFormInput('password2', __('Repeat'), __('Repeat the password'), false, 'password')
             +editFormGroup('roles', __('Roles'))
+                p.font-weight-bold= __('User Roles')
                 +userRoles('e')
+                div.alert.alert-info= __('Changing roles takes effect only after a fresh login')

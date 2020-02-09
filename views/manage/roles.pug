@@ -73,3 +73,4 @@ block content
             +editFormInput('name', __('Name'), __('Role Name'), true)
             +editFormGroup('rights', __('Rights'))
                 +authorizationFields('e')
+                div.alert.alert-info= __('Changing roles takes effect only after a fresh login')

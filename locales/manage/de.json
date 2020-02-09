@@ -13,5 +13,7 @@
     "Email-Address": "Email-Adresse",
     "Last Change": "Letzte Änderung",
     "Phone": "Telefon",
-    "Phone Number": "Telefonnummer"
+    "Phone Number": "Telefonnummer",
+    "User Roles": "Benutzerrollen",
+    "Changing roles takes effect only after a fresh login": "Änderungen an Benutzerrollen wirken sich erst beim nächsten Login aus"
 }
