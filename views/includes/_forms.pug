@@ -4,9 +4,9 @@ mixin editFormGroup(name, label)
         div.col-sm-10
             block
 
-mixin editFormInput(name, label, placeholder, required=false)
+mixin editFormInput(name, label, placeholder, required=false, type='text')
     +editFormGroup(name, label)
         if required
-            input.form-control(type='text', name=name, placeholder= placeholder, required)
+            input.form-control(type=type, name=name, placeholder= placeholder, required)
         else
-            input.form-control(type='text', name=name, placeholder= placeholder)
+            input.form-control(type=type, name=name, placeholder= placeholder)

@@ -93,8 +93,8 @@ block content
                                     method='PUT',
                                     action='/manage/guests/{id}')
             +editFormInput('name', __('Name'), __('Full Name'))
-            +editFormInput('email', __('Email'), __('Email-Address'))
-            +editFormInput('phone', __('Phone'), __('Phone Number'))
+            +editFormInput('email', __('Email'), __('Email-Address'), false, 'email')
+            +editFormInput('phone', __('Phone'), __('Phone Number'), false, 'tel')
             +editFormInput('group', __('Group'), __('Group caption'))
             +editFormInput('address', __('Address'), __('Home address'))
             +editFormGroup('gender', __('Gender'))
