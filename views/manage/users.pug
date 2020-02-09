@@ -41,15 +41,15 @@ block content
                 __('Abort'),
                 'addUserForm',
                 __('Error while transmitting data'))(class='clear-form')
-        form.ajaxForm#addUserForm(data-modal='#addUserModal',
+        form.ajaxForm.needs-validation#addUserForm(data-modal='#addUserModal',
                                 data-error='#addUserModalError',
                                 data-redraw-table='#usersTable'
                                 method='post',
                                 action='/manage/users')
-            +editFormInput('name', __('Name'), __('Full Name'), true)
-            +editFormInput('email', __('Email'), __('Email-Address'), true, 'email')
-            +editFormInput('password', __('Password'), __('Enter a strong password'), true, 'password')
-            +editFormInput('password2', __('Repeat'), __('Repeat the password'), true, 'password')
+            +editFormInput('name', __('Name'), __('Full Name'), true, __('This field is required'))
+            +editFormInput('email', __('Email'), __('Email-Address'), true, __('Not a valid email address'), 'email')
+            +editFormInput('password', __('Password'), __('Enter a strong password'), true, __('Not a valid password'), 'password')
+            +editFormInput('password2', __('Repeat'), __('Repeat the password'), true, __('Passwords don\'t match'), 'password')
             +editFormGroup('roles', __('Roles'))
                 p.font-weight-bold= __('User Roles')
                 +userRoles('n')
@@ -66,17 +66,17 @@ block content
             __('Save'),
             __('Abort'),
             'editUserForm',
-            __('Error while transmitting data'))
-        form.ajaxForm#editUserForm(data-modal='#editUserModal',
+            __('Error while transmitting data'))(class='clear-form')
+        form.ajaxForm.needs-validation#editUserForm(data-modal='#editUserModal',
                                     data-error='#editUserModalError',
                                     data-redraw-table='#usersTable',
                                     data-fill-method='GET'
                                     method='PUT',
                                     action='/manage/users/{id}')
-            +editFormInput('name', __('Name'), __('Full Name'), true)
-            +editFormInput('email', __('Email'), __('Email-Address'), true, 'email')
-            +editFormInput('password', __('Password'), __('Enter a strong password'), false, 'password')
-            +editFormInput('password2', __('Repeat'), __('Repeat the password'), false, 'password')
+            +editFormInput('name', __('Name'), __('Full Name'), true, __('This field is required'))
+            +editFormInput('email', __('Email'), __('Email-Address'), true, __('Not a valid email address'), 'email')
+            +editFormInput('password', __('Password'), __('Enter a strong password'), false, __('Not a valid password'), 'password')
+            +editFormInput('password2', __('Repeat'), __('Repeat the password'), false, __('Passwords don\'t match'), 'password')
             +editFormGroup('roles', __('Roles'))
                 p.font-weight-bold= __('User Roles')
                 +userRoles('e')

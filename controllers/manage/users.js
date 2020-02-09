@@ -2,6 +2,7 @@ const debug = require('debug')('wedical:manage-users');
 const express = require('express');
 const router = express.Router();
 const csrf = require('csurf');
+const { check, validationResult } = require('express-validator');
 const reqSanitizer = require('../../extension/request-sanitizer');
 const { Auth } = require('../../auth');
 const { addBreadcrump } = require('../../utils');
@@ -17,8 +18,7 @@ async function getUser(req, res) {
         res.setHeader('CSRF-Token', req.csrfToken());
         let user = await User.findOne({ _id: req.params.id });
         if (user) {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ data: user.toPOJO() }));
+            res.json({ data: user.toPOJO() });
         } else {
             debug('ERROR: User not found!');
         }
@@ -29,6 +29,11 @@ async function getUser(req, res) {
 }
 
 async function addUser(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
     // Create new user
     let user = await User.create({
         name: req.body[`name`],
@@ -59,6 +64,11 @@ function setRoles(user, req) {
 }
 
 async function putUser(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
     if (req.params.id) {
         debug(`Put user with id: ${req.params.id}`);
         res.setHeader('CSRF-Token', req.csrfToken());
@@ -66,12 +76,14 @@ async function putUser(req, res) {
         if (user) {
             // Change authorization profile first
             setRoles(user, req);
+            // New password?
+            if (req.body.password) {
+                user.setLocalPw(req.body.password);
+            }
+            delete req.body.password;
+            delete req.body.password2;
             // Assign other fields
             user.assign(req.body);
-            // New password?
-            if (req.params.password) {
-                user.setLocalPw(req.body[`password`]);
-            }
             await user.save();
             return res.status(200).end('ok');
         } else {
@@ -102,10 +114,9 @@ async function delUser(req, res) {
 
 async function listUsers(req, res) {
     res.setHeader('CSRF-Token', req.csrfToken());
-    res.setHeader('Content-Type', 'application/json');
     let roles = await Role.dictionary('_id', 'name');
     let users = await User.find();
-    res.end(JSON.stringify({
+    res.json({
         data: users.map(g => {
             let obj = g.toPOJO();
             // Translate role id to name
@@ -119,7 +130,7 @@ async function listUsers(req, res) {
             }
             return obj;
         })
-    }));
+    });
 }
 
 // Define the users page route
@@ -147,6 +158,10 @@ router.post('/',
     csrfProtection,
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'users' }),
+    check('name').notEmpty(),
+    check('email').isEmail(),
+    check('password').notEmpty(),
+    check('password2').custom((value, { req }) => value === req.body.password).withMessage('Passwords don\'t match'),
     addUser
 );
 
@@ -172,6 +187,9 @@ router.put('/:id',
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'users' }),
     reqSanitizer.removeBody(['_id', 'createdAt', 'updatedAt']),
+    check('name').notEmpty(),
+    check('email').isEmail(),
+    check('password2').if((value, { req }) => req.body.password).custom((value, { req }) => value === req.body.password).withMessage('Passwords don\'t match'),
     putUser
 );
 
