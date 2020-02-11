@@ -155,7 +155,7 @@ app.use(function(req, res, next) {
             return i18n.__.apply(req, arguments);
         };
         // page title
-        res.locale.title = config.title;
+        res.locals.title = config.title;
         // session
         res.locals.session = req.session;
         // query
