@@ -19,6 +19,7 @@ const sassMiddleware = require('node-sass-middleware');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const i18n = require('i18n');
+const config = require('./config');
 const { Auth } = require('./auth');
 const i18nExt = require('./extension/i18n-ext');
 var Guest = require('./models/guest');
@@ -153,6 +154,8 @@ app.use(function(req, res, next) {
         res.locals.__ = res.__ = function() {
             return i18n.__.apply(req, arguments);
         };
+        // page title
+        res.locale.title = config.title;
         // session
         res.locals.session = req.session;
         // query
