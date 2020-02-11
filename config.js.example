@@ -12,6 +12,8 @@ const config = {
     // initial password of admin
     passwd: 'admin',
   },
+  // locales you want to support (icon collection: https://www.iconfinder.com/iconsets/195-flat-flag-psd-icons)
+  locales: ['en', 'de'],
 };
 
 module.exports = config;

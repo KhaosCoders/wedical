@@ -131,23 +131,25 @@ app.set('view engine', 'pug');
 
 // i18n middleware
 app.use(i18n.init);
-i18n.configure({
-    locales: ['en', 'de'],
+var i18nOptions = {
+    locales: config.locales,
     defaultLocale: 'en',
+    queryParameter: 'lang',
+    cookie: 'lang',
     directory: __dirname + '/locales/backend',
     register: global,
-});
+};
+i18n.configure(i18nOptions);
 
 // express helper for natively supported engines
 app.use(function(req, res, next) {
     if (req.path.indexOf('.') === -1) {
+        // Save user locale to cookie
+        if (req.query.lang && i18nOptions.locales.includes(req.query.lang)) {
+            res.cookie('lang', req.query.lang, { maxAge: 900000, httpOnly: true });
+        }
         // Load a hierarchy of locales into i18n module
-        i18nExt.configureHierarchy(__dirname + '/locales', req.path, {
-            locales: ['en', 'de'],
-            defaultLocale: 'en',
-            extension: '.json',
-            register: global,
-        });
+        i18nExt.configureHierarchy(__dirname + '/locales', req.path, i18nOptions);
 
         debug('forward locals to template engine');
         // i18n __()
@@ -156,6 +158,8 @@ app.use(function(req, res, next) {
         };
         // page title
         res.locals.title = config.title;
+        // possible locales
+        res.locals.locales = config.locales;
         // session
         res.locals.session = req.session;
         // query

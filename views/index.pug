@@ -1,7 +1,14 @@
 extends main_layout.pug
-block content
-  nav.navbar.navbar-dark
-    a.btn.btn-secondary(href='/manage')= __('Manage')
-    a.btn.btn-primary(href='/invite')= __('Invite')
 
+block nav
+  nav.navbar.navbar-dark.bg-dark
+    a.navbar-brand(href="#")= title
+    form.form-inline
+      for lang in locales
+        a(href=`?lang=${lang}`)
+          img.btn-lang.mx-1(src=`/img/locales/iconfinder_${lang}.png`)
+      a.btn.btn-primary.mx-2(href='/invite')= __('Invite')
+      a.btn.btn-secondary(href='/manage')= __('Manage')
+
+block content
   include content/home.pug
