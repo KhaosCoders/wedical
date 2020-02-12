@@ -1,5 +1,40 @@
 extends manage_layout.pug
 
+include ../includes/_modals.pug
+include ../includes/_icons.pug
+include ../includes/_forms.pug
+
 
 block content
-    p Kommt noch
+    span.table-add.float-right.mb-3.mr-2
+        a.text-success(href='#', data-toggle='modal', data-target='#addInviteModal')
+            i.fas.fa-plus.fa-2x(aria-hidden='true')
+
+    table.data-table.table.table-responsive-md#invitesTable(data-page-length='25',
+                                                        data-action-column='1'
+                                                        data-delete-modal='#deleteInviteModal'
+                                                        data-edit-modal='#editInviteModal'
+                                                        data-edit-form='#editInviteForm'
+                                                        data-order='[[ 0, "asc" ]]',
+                                                        data-ajax='/manage/invites/list',
+                                                        data-columns='[{"data": "name"},{"data": "_id"}]')
+        colgroup
+            col(width='50%')
+            col(width='1')
+        thead
+            tr
+                th= __('Name')
+                th= __('Action')
+
+    +modal('addInviteModal',
+                __('Add Invite'),
+                __('Add'),
+                __('Abort'),
+                'addInviteForm',
+                __('Error while transmitting data'))(class='clear-form')
+        form.ajaxForm.needs-validation#addInviteForm(data-modal='#addInviteModal',
+                                data-error='#addInviteModalError',
+                                data-redraw-table='#invitesTable'
+                                method='post',
+                                action='/manage/invites')
+            +editFormInput('name', __('Name'), __('Full Name'), true, __('This field is required'))
