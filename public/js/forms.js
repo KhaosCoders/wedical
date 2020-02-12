@@ -5,7 +5,12 @@
      */
     $.fn.resetFormFields = function() {
         return this.each(function() {
-            $(this).clearForm();
+            var form = $(this);
+            form.clearForm();
+            form.find('.btn-group[data-default-value]').each(function(){
+                var group = $(this);
+                group.find(`[type="radio"][value="${group.data('defaultValue')}"]`).closest('label').addClass('active');
+            });
         });
     };
 

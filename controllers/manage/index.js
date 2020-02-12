@@ -18,11 +18,13 @@ router.get('/',
         let allGuests = await Guest.find();
         let genders = dataExt.countBy(allGuests, (g) => g.gender, Object.keys(Guest.genders));
         let ages = dataExt.countBy(allGuests, (g) => g.age, Object.keys(Guest.ages));
+        let expectations = dataExt.countBy(allGuests, (g) => g.expected, Object.keys(Guest.expectations));
 
         res.render('manage/index', {
             guestCount: allGuests.length,
             guestGenders: genders,
             guestAges: ages,
+            guestsExpected: expectations,
             userCount: await User.count(),
         });
     });

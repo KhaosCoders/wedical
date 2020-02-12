@@ -9,6 +9,13 @@ const ModelSanitizer = require('../extension/model-sanitizer');
  *
  * Properties:
  * - name
+ * - email
+ * - phone
+ * - group
+ * - address
+ * - gender
+ * - age
+ * - expected
  */
 class Guest extends Model {
     /**
@@ -34,6 +41,12 @@ class Guest extends Model {
             values: {
                 name: '',
                 email: '',
+                phone: '',
+                group: '',
+                address: '',
+                gender: '',
+                age: '',
+                expected: 'unsure',
             },
         });
     }
@@ -55,5 +68,8 @@ Guest.genders = { 'undefined': 'Undefined', 'm': 'Male', 'd': 'Diverse', 'f': 'F
 
 // all possible ages
 Guest.ages = { 'undefined': 'Undefined', 'baby': 'Baby', 'child': 'Child', 'teen': 'Teen', 'youndAdult': 'Young Adult', 'adult': 'Adult', 'senior': 'Senoir' };
+
+// all possible expectations
+Guest.expectations = { 'expected': 'Will sure come', 'unsure': 'Might come', 'unexpected': 'Might not come'} 
 
 module.exports = Guest;

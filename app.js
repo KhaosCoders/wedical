@@ -173,9 +173,10 @@ app.use(function(req, res, next) {
         if (Object.entries(res.locals.dangers).length !== 0) { debug('dangers: ' + res.locals.dangers); }
         if (Object.entries(res.locals.warnings).length !== 0) { debug('warnings: ' + res.locals.warnings); }
         if (Object.entries(res.locals.errors).length !== 0) { debug('errors: ' + res.locals.errors); }
-        // genders & ages
+        // genders, ages, expectations
         res.locals.genders = Guest.genders;
         res.locals.ages = Guest.ages;
+        res.locals.expectations = Guest.expectations;
     }
     next();
 });

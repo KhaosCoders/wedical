@@ -28,6 +28,16 @@ block content
             |
             |
             = count
+      span= '|'
+      each count, expected in guestsExpected
+        if count > 0
+          span.badge.badge-pill.badge-secondary.mx-1(data-toggle='tooltip', title=__(expectations[expected]))
+            +expectationIcon(expected)
+            |
+            |
+            = count
+
+            
   div.container.my-2
     div.row
       +tile('fa-user-friends', __('Guest List'), '/manage/guests')
