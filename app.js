@@ -75,6 +75,12 @@ app.use('/js/jquery.form.min.js',
 app.use('/js/jquery.form.min.js.map',
     express.static(__dirname +
         '/node_modules/jquery-form/dist/jquery.form.min.js.map'));
+app.use('/js/jquery.quicksearch.min.js',
+    express.static(__dirname +
+        '/node_modules/jquery.quicksearch/dist/jquery.quicksearch.min.js'));
+app.use('/js/jquery.quicksearch.min.js.map',
+    express.static(__dirname +
+        '/node_modules/jquery.quicksearch/dist/jquery.quicksearch.min.js.map'));
 // Bootstrap
 app.use('/js/bootstrap.bundle.min.js',
     express.static(__dirname +
