@@ -2,6 +2,7 @@ const debug = require('debug')('wedical:guest');
 const path = require('path');
 const extend = require('extend');
 const { Model, Timestamps } = require('nedb-models');
+const ModelSanitizer = require('../extension/model-sanitizer');
 
 /**
  * Model for party guests
@@ -37,9 +38,17 @@ class Guest extends Model {
         });
     }
 
+    /**
+     * Sanitize model data before storing them
+     */
+    sanitize() {
+        this.email = this.email.trim().toLowerCase();
+        this.name = this.name.trim();
+    }
 }
 
 Guest.use(Timestamps);
+Guest.use(ModelSanitizer);
 
 // all possible genders
 Guest.genders = { 'undefined': 'Undefined', 'm': 'Male', 'd': 'Diverse', 'f': 'Female' };
