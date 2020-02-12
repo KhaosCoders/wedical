@@ -34,5 +34,11 @@
 	"Female": "Weiblich",
 	"Might come": "Kommt eventuell",
 	"Will sure come": "Kommt sehr wahrscheinlich",
-	"Might not come": "Kommt eher nicht"
+    "Might not come": "Kommt eher nicht",
+    "Type": "Art",
+	"Guest-List": "Gästeliste",
+	"Wildcard": "Wildcard",
+    "Tickets": "Tickets",
+	"Selected": "Ausgewählt",
+	"Search...": "Suche..."
 }

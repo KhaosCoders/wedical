@@ -26,7 +26,7 @@ block content
                 th= __('Name')
                 th= __('Action')
 
-    +modal('addInviteModal',
+    +wideModal('addInviteModal',
                 __('Add Invite'),
                 __('Add'),
                 __('Abort'),
@@ -38,3 +38,20 @@ block content
                                 method='post',
                                 action='/manage/invites')
             +editFormInput('name', __('Name'), __('Full Name'), true, __('This field is required'))
+            +editFormGroup('type', __('Type'))
+                div.btn-group.btn-group-toggle(data-toggle='buttons')
+                    label.btn.lazy-tooltip.btn-secondary.active
+                        input(type='radio', name='type', value='guestlist', autocomplete='off', data-toggle='radio' data-target='.newInfiteToggle', checked)
+                        span(data-toggle='tooltip', title=__('Choose recipients from the guest list'))= __('Guest-List')
+                    label.btn.lazy-tooltip.btn-secondary
+                        input(type='radio', name='type', value='whildcard', autocomplete='off', data-toggle='radio' data-target='.newInfiteToggle')
+                        span(data-toggle='tooltip', title=__('Send a first-come first-in invite to a group of people'))= __('Wildcard')
+            div.newInfiteToggle.collapse.show
+                +editFormGroup('invitees', __('Invitees'))
+                    select.form-control.quickMultiSelect(name='intitees', multiple='multiple', data-left-header= __('Guests'), data-right-header= __('Selected'), data-placeholder= __('Search...'))
+                        each guest in guests
+                            option(value= guest._id)= `${guest.name} ${guest.group ? `(${guest.group})` : ''}`
+            div.newInfiteToggle.collapse
+                +editFormInput('tickets', __('Tickets'), __('Amount of free tickets'), false, __('This field is required'), 'number', 4)
+
+

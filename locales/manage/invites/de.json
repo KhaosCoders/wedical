@@ -1,1 +1,7 @@
-{}
+{
+    "Add Invite": "Einladung hinzufügen",
+    "Choose recipients from the guest list": "Wähle Empfänger aus der Gästeliste aus",
+	"Send a first-come first-in invite to a group of people": "Sende eine Kontingent-Einladung an eine Gruppe von Leuten",
+	"Amount of free tickets": "Anzahl der Plätze",
+	"Invitees": "Eingeladene"
+}

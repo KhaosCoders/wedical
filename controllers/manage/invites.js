@@ -7,11 +7,10 @@ const reqSanitizer = require('../../extension/request-sanitizer');
 const { Auth } = require('../../auth');
 const { addBreadcrump } = require('../../utils');
 var Invite = require('../../models/invite');
+var Guest = require('../../models/guest');
 
 // CSRF
 var csrfProtection = csrf();
-
-
 
 async function listInvites(req, res) {
     res.setHeader('CSRF-Token', req.csrfToken());
@@ -27,8 +26,11 @@ router.get('/',
     Auth.authenticate('/manage/invites'),
     Auth.authorize('manage', { 'Segment': 'invites' }),
     addBreadcrump('Invites', '/manage/invites'),
-    function(req, res) {
-        res.render('manage/invites', { csrfToken: req.csrfToken() });
+    async function(req, res) {
+        res.render('manage/invites', { 
+            csrfToken: req.csrfToken(),
+            guests: await Guest.find(),
+        });
     });
 
 // /list feeds DataTable in client with data

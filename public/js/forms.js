@@ -177,6 +177,52 @@
                 });
             };
         });
+    };
 
+    /**
+     * @summary
+     * enable forms to load form data via AJAX
+     */
+    $.fn.quickMultiSelect = function() {
+        return this.each(function() {
+            var select = $(this);
+            var leftHeader = select.data('leftHeader') || 'Available';
+            var rightHeader = select.data('rightHeader') || 'Active';
+            var placeholder = select.data('placeholder') || 'Search...';
+            select.multiSelect({
+                selectableHeader: `<p class="h5">${leftHeader}</p><div><input type='text' class='list-search-input' autocomplete='off' placeholder='${placeholder}' novalidate></div>`,
+                selectionHeader: `<p class="h5">${rightHeader}</p><div><input type='text' class='list-search-input' autocomplete='off' placeholder='${placeholder}' novalidate></div>`,
+                cssClass: "list-form-control",
+                afterInit: function(ms){
+                    var that = this,
+                        $selectableSearch = that.$selectableUl.prev().children('input'),
+                        $selectionSearch = that.$selectionUl.prev().children('input'),
+                        selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+                        selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+                    that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+                    .on('keydown', function(e){
+                        if (e.which === 40){
+                            that.$selectableUl.focus();
+                            return false;
+                        }
+                    });
+                    that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+                    .on('keydown', function(e){
+                        if (e.which == 40){
+                            that.$selectionUl.focus();
+                            return false;
+                        }
+                    });
+                },
+                afterSelect: function(){
+                    this.qs1.cache();
+                    this.qs2.cache();
+                },
+                afterDeselect: function(){
+                    this.qs1.cache();
+                    this.qs2.cache();
+                }
+            });
+        });
     };
 })(jQuery);
