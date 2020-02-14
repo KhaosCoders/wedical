@@ -36,12 +36,14 @@
 
     // Multi-Selects with QuickSearch
     $('.quickMultiSelect').quickMultiSelect();
-    
+
     // Radio toggles
-    $('input[data-toggle="radio"][data-target]').each(function(){
+    $('input[data-toggle="radio"][data-target]').each(function() {
         var input = $(this);
         var selector = input.data('target');
-        input.change(function() { $(selector).collapse('toggle'); });
+        input.change(function() {
+            $(selector).collapse('toggle');
+        });
     });
 })(jQuery);
 
