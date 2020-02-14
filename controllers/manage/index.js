@@ -45,6 +45,9 @@ router.use('/guests', breadcrump, require('./guests'));
 // manage invites routes
 router.use('/invites', breadcrump, require('./invites'));
 
+// manage QS code routes
+router.use('/qrcode', breadcrump, require('./qrcode'));
+
 // manage users & routes routes
 router.use('/users', breadcrump, require('./users'));
 router.use('/roles', breadcrump, require('./roles'));

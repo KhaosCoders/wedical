@@ -61,6 +61,7 @@ block content
         span.badge.badge-secondary.mx-2= guestCount
       +tile('fa-envelope-open-text', __('Invitations'), '/manage/invites')
         span.badge.badge-secondary.mx-2= `${inviteSum} (${inviteCount})`
+      +tile('fa-qrcode', __('QR-Code'), '/manage/qrcode')
 
   h2.pt-4= __('Users')
   div.container.my-2
