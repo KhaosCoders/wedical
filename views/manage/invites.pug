@@ -11,19 +11,22 @@ block content
             i.fas.fa-plus.fa-2x(aria-hidden='true')
 
     table.data-table.table.table-responsive-md#invitesTable(data-page-length='25',
-                                                        data-action-column='1'
+                                                        data-invitee-column='1'
+                                                        data-action-column='2'
                                                         data-delete-modal='#deleteInviteModal'
                                                         data-edit-modal='#editInviteModal'
                                                         data-edit-form='#editInviteForm'
                                                         data-order='[[ 0, "asc" ]]',
                                                         data-ajax='/manage/invites/list',
-                                                        data-columns='[{"data": "name"},{"data": "_id"}]')
+                                                        data-columns='[{"data": "title"},{"data": "guests.length"},{"data": "_id"}]')
         colgroup
+            col(width='50%')
             col(width='50%')
             col(width='1')
         thead
             tr
-                th= __('Name')
+                th= __('Title')
+                th= __('Guests')
                 th= __('Action')
 
     +wideModal('addInviteModal',
@@ -37,21 +40,72 @@ block content
                                 data-redraw-table='#invitesTable'
                                 method='post',
                                 action='/manage/invites')
-            +editFormInput('name', __('Name'), __('Full Name'), true, __('This field is required'))
+            +editFormInput('title', __('Title'), __('A descriptive title'), true, __('This field is required'))
             +editFormGroup('type', __('Type'))
-                div.btn-group.btn-group-toggle(data-toggle='buttons', data-default-value='guestlist', data-default-hide='.newInfiteToggle' data-default-show='#guestlistSection')
-                    label.btn.lazy-tooltip.btn-secondary.active
-                        input(type='radio', name='type', value='guestlist', autocomplete='off', data-toggle='radio' data-target='.newInfiteToggle', checked)
-                        span(data-toggle='tooltip', title=__('Choose recipients from the guest list'))= __('Guest-List')
-                    label.btn.lazy-tooltip.btn-secondary
-                        input(type='radio', name='type', value='whildcard', autocomplete='off', data-toggle='radio' data-target='.newInfiteToggle')
-                        span(data-toggle='tooltip', title=__('Send a first-come first-in invite to a group of people'))= __('Wildcard')
-            div.newInfiteToggle.collapse.show#guestlistSection
-                +editFormGroup('invitees', __('Invitees'))
-                    select.form-control.quickMultiSelect(name='intitees', multiple='multiple', data-left-header= __('Guests'), data-right-header= __('Selected'), data-placeholder= __('Search...'))
+                div.btn-group.btn-group-toggle(data-toggle='buttons', data-default-value='guestlist', data-default-hide='.newInviteToggle' data-default-show='#newGuestlist')
+                    label.btn.lazy-tooltip.btn-gender-d.active
+                        input(type='radio', name='type', value='guestlist', autocomplete='off', data-toggle='radio' data-target='.newInviteToggle', checked)
+                        span(data-toggle='tooltip', title=__('Choose recipients from the guest list'))
+                            i.fas.fa-user-friends
+                            |
+                            |
+                            = __('Guest-List')
+                    label.btn.lazy-tooltip.btn-gender-d
+                        input(type='radio', name='type', value='wildcard', autocomplete='off', data-toggle='radio' data-target='.newInviteToggle')
+                        span(data-toggle='tooltip', title=__('Send a first-come first-in invite to a group of people'))
+                            i.fas.fa-ticket-alt
+                            |
+                            |
+                            = __('Wildcard')
+            div.newInviteToggle.collapse.show#newGuestlist
+                +editFormGroup('guests', __('Invitees'))
+                    select.form-control.quickMultiSelect(name='guests', multiple='multiple', data-left-header= __('Guests'), data-right-header= __('Selected'), data-placeholder= __('Search...'))
                         each guest in guests
                             option(value= guest._id)= `${guest.name} ${guest.group ? `(${guest.group})` : ''}`
-            div.newInfiteToggle.collapse
+            div.newInviteToggle.collapse
                 +editFormInput('tickets', __('Tickets'), __('Amount of free tickets'), false, __('This field is required'), 'number', 4)
 
+    +deleteModal('deleteInviteModal',
+                __('Remove Invite'),
+                __('Error while sending request'),
+                '/manage/invites/{id}',
+                '#invitesTable')
+        p= __('Remove this Invite?')
+        p= __('Guests who recieved this invite will be left out...')
 
+    +wideModal('editInviteModal',
+            __('Edit Invite'),
+            __('Save'),
+            __('Abort'),
+            'editInviteForm',
+            __('Error while transmitting data'))(class='clear-form')
+        form.ajaxForm.needs-validation#editInviteForm(data-modal='#editInviteModal',
+                                    data-error='#editInviteModalError',
+                                    data-redraw-table='#invitesTable',
+                                    data-fill-method='GET'
+                                    method='PUT',
+                                    action='/manage/invites/{id}')
+            +editFormInput('title', __('Title'), __('A descriptive title'), true, __('This field is required'))
+            +editFormGroup('type', __('Type'))
+                div.btn-group.btn-group-toggle(data-toggle='buttons')
+                    label.btn.lazy-tooltip.btn-gender-d
+                        input(type='radio', name='type', value='guestlist', autocomplete='off', data-toggle='radio' data-target='.editInviteToggle' data-show='#editGuestlist')
+                        span(data-toggle='tooltip', title=__('Choose recipients from the guest list'))
+                            i.fas.fa-user-friends
+                            |
+                            |
+                            = __('Guest-List')
+                    label.btn.lazy-tooltip.btn-gender-d
+                        input(type='radio', name='type', value='wildcard', autocomplete='off', data-toggle='radio' data-target='.editInviteToggle' data-show='#editWildcard')
+                        span(data-toggle='tooltip', title=__('Send a first-come first-in invite to a group of people'))
+                            i.fas.fa-ticket-alt
+                            |
+                            |
+                            = __('Wildcard')
+            div.editInviteToggle.collapse#editGuestlist
+                +editFormGroup('guests', __('Invitees'))
+                    select.form-control.quickMultiSelect(name='guests', multiple='multiple', data-left-header= __('Guests'), data-right-header= __('Selected'), data-placeholder= __('Search...'))
+                        each guest in guests
+                            option(value= guest._id)= `${guest.name} ${guest.group ? `(${guest.group})` : ''}`
+            div.editInviteToggle.collapse#editWildcard
+                +editFormInput('tickets', __('Tickets'), __('Amount of free tickets'), false, __('This field is required'), 'number', 4)

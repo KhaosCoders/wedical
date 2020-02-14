@@ -7,13 +7,17 @@
         return this.each(function() {
             var form = $(this);
             form.clearForm();
+            form.find('select').each(function() {
+                if ($(this).data('multiselect')) {
+                    $(this).data('multiselect').deselect_all();
+                }
+            });
             form.find('.btn-group[data-default-value]').each(function() {
                 var group = $(this);
                 // set default radio button
                 group.find(`[type="radio"][value!="${group.data('defaultValue')}"]`).closest('label').removeClass('active');
                 var radio = group.find(`[type="radio"][value="${group.data('defaultValue')}"]`);
-                radio.closest('label').addClass('active');
-                radio.prop('checked', true);
+                radio.prop('checked', true).closest('label').addClass('active');
                 // activate default section
                 var hideSelector = group.data('defaultHide');
                 var showSelector = group.data('defaultShow');
@@ -121,7 +125,7 @@
                 // reset form data
                 form.find('input:not([type="checkbox"]):not([type="hidden"]):not([type="radio"])').val('');
                 form.find('input[type="radio"]').closest('label').removeClass('active');
-                form.find('input[type="checkbox"]').prop("checked", false);
+                form.find('input[type="checkbox"]').prop('checked', false);
                 // load data
                 $.ajax({
                     headers: { "CSRF-Token": getCSRF() },
@@ -136,7 +140,8 @@
                                     continue;
                                 }
                                 var inputs = form.find(`[name=${key}]`);
-                                inputs.not('[type="radio"]').each(function() {
+                                // text
+                                inputs.not('[type="radio"]').not('select').each(function() {
                                     var input = $(this);
                                     switch (input.data('format')) {
                                         case 'datetime':
@@ -148,9 +153,23 @@
                                     }
                                     input.val(value);
                                 });
-                                inputs.filter(`[type="radio"][value="${value}"]`).closest('label').addClass('active');
+                                // radio button group
+                                inputs.filter(`[type="radio"][value="${value}"]`).each(function() {
+                                    var radio = $(this);
+                                    radio.prop('checked', true).closest('label').addClass('active');
+                                    if (radio.data('toggle') === 'radio') {
+                                        $(radio.data('target')).removeClass('show');
+                                        $(radio.data('show')).addClass('show');
+                                    }
+                                });
+                                // multiselect
+                                inputs.filter('select').each(function() {
+                                    if ($(this).data('multiselect')) {
+                                        $(this).data('multiselect').select(value);
+                                    }
+                                });
                             }
-                            // set checkboxes in roles dialogs
+                            // set checkboxes in role dialogs
                             if (data.data.auth) {
                                 let checkboxes = form.find('input[type="checkbox"]');
                                 for (let authObj of data.data.auth) {
@@ -161,14 +180,14 @@
                                             checkboxes.each(function() {
                                                 let chk = $(this);
                                                 if (chk.attr('name').startsWith(chkName)) {
-                                                    chk.prop("checked", true);
+                                                    chk.prop('checked', true);
                                                 }
                                             });
                                         }
                                     }
                                 }
                             }
-                            // set checkboxes in roles dialogs
+                            // set checkboxes in user dialogs
                             if (data.data.roles) {
                                 let checkboxes = form.find('input[type="checkbox"]');
                                 for (let roleId of data.data.roles) {

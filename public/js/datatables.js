@@ -102,6 +102,21 @@
                 });
             }
 
+            // data-invitee-column
+            if (typeof table.data('inviteeColumn') === 'number') {
+                var inviteeColumn = table.data('inviteeColumn');
+                options.columnDefs.push({
+                    "targets": inviteeColumn,
+                    "render": function(data, type, row, meta) {
+                        if (row['type'] == 'guestlist') {
+                            return `${row['guests'].length} <i class="fas fa-user-friends"></i>`;
+                        } else {
+                            return `${row['tickets']} <i class="fas fa-ticket-alt"></i>`;
+                        }
+                    }
+                });
+            }
+
             // data-action-column
             if (typeof table.data('actionColumn') === 'number') {
                 var actionColumn = table.data('actionColumn');
