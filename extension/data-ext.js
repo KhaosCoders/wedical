@@ -35,6 +35,10 @@ module.exports = (function() {
     };
     dataExt.countBy = countBy;
 
+    /**
+     * Summs arrays or objects with nummeric values
+     * @param {any} collection Array or object
+     */
     function sum(collection) {
         if (Array.isArray(collection)) {
             return collection.reduce((a, b) => a + b, 0)
