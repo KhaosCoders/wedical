@@ -54,18 +54,25 @@ block content
 
   hr
 
-  h2.pt-2= __('Guests')
-  div.container.my-2
-    div.row
-      +tile('fa-user-friends', __('Guest List'), '/manage/guests')
-        span.badge.badge-secondary.mx-2= guestCount
-      +tile('fa-envelope-open-text', __('Invitations'), '/manage/invites')
-        span.badge.badge-secondary.mx-2= `${inviteSum} (${inviteCount})`
-      +tile('fa-qrcode', __('QR-Code'), '/manage/qrcode')
+  if (access.guests || access.invites || access.qrcode)
+    h2.pt-2= __('Guests')
+    div.container.my-2
+      div.row
+        if (access.guests)
+          +tile('fa-user-friends', __('Guest List'), '/manage/guests')
+            span.badge.badge-secondary.mx-2= guestCount
+        if (access.invites)
+          +tile('fa-envelope-open-text', __('Invitations'), '/manage/invites')
+            span.badge.badge-secondary.mx-2= `${inviteSum} (${inviteCount})`
+        if (access.qrcode)
+          +tile('fa-qrcode', __('QR-Code'), '/manage/qrcode')
 
-  h2.pt-4= __('Users')
-  div.container.my-2
-    div.row
-      +tile('fa-users-cog', __('Users'), '/manage/users')
-        span.badge.badge-secondary.mx-2= userCount
-      +tile('fa-user-tag', __('Roles'), '/manage/roles')
+  if (access.users || access.roles)
+    h2.pt-4= __('Users')
+    div.container.my-2
+      div.row
+        if (access.users)
+          +tile('fa-users-cog', __('Users'), '/manage/users')
+            span.badge.badge-secondary.mx-2= userCount
+        if (access.roles)
+          +tile('fa-user-tag', __('Roles'), '/manage/roles')

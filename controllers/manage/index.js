@@ -33,6 +33,13 @@ router.get('/',
             inviteSum: dataExt.sum(invites),
             invites: invites,
             userCount: await User.count(),
+            access: {
+                guests: req.user.Authorization.check('manage', { 'Segment': 'users' }),
+                invites: req.user.Authorization.check('manage', { 'Segment': 'invites' }),
+                qrcode: req.user.Authorization.check('manage', { 'Segment': 'qrcode' }),
+                users: req.user.Authorization.check('manage', { 'Segment': 'users' }),
+                roles: req.user.Authorization.check('manage', { 'Segment': 'roles' }),
+            }
         });
     });
 /*
