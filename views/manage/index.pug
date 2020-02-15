@@ -13,9 +13,9 @@ mixin tile(icon,text,link)
 block content
   div.container.h5
     div.row
-      div.col-2
+      div.col-4.col-md-2
         strong= __('Guests')
-      div.col-10
+      div.col-8.col-md-10
         if guestCount > 0
           each count, gender in guestGenders
             if count > 0
@@ -41,9 +41,9 @@ block content
                 |
                 = count
     div.row.my-2
-      div.col-2
+      div.col-4.col-md-2
         strong= __('Invites')
-      div.col-10
+      div.col-8.col-md-10
         each count, itype in invites
           if count > 0
             span.badge.badge-pill.badge-secondary.mx-1
