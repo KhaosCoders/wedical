@@ -21,11 +21,13 @@
         "debug": "~4.1.1",
         "eruda": "^2.2.0",
         "express": "~4.17.1",
+        "express-fileupload": "^1.1.6",
         "express-session": "^1.17.0",
         "express-validator": "^6.4.0",
         "helmet": "^3.21.2",
         "http-errors": "~1.7.3",
         "i18n": "^0.8.5",
+        "image-js": "^0.21.8",
         "jquery": "^3.4.1",
         "jquery-aniview": "^1.0.2",
         "jquery-form": "^4.2.2",
@@ -44,6 +46,7 @@
         "popper.js": "^1.16.1",
         "pug": "^2.0.4",
         "qrcode": "^1.4.4",
+        "qrcode-reader": "^1.0.4",
         "validator": "^12.2.0"
     },
     "devDependencies": {
