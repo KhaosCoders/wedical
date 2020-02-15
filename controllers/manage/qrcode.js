@@ -8,6 +8,7 @@ const customUtils = require('nedb/lib/customUtils');
 const { Auth } = require('../../auth');
 const { addBreadcrump, base64PNG } = require('../../utils');
 var QRcode = require('../../models/qrcode');
+var Invite = require('../../models/invite');
 
 // CSRF
 var csrfProtection = csrf();
@@ -51,13 +52,10 @@ router.get('/',
     Auth.authorize('manage', { 'Segment': 'qrcode' }),
     addBreadcrump('QR Code', '/manage/qrcode'),
     async function(req, res) {
-        // First or new QR-Code
-        let qrcode = await QRcode.findOne();
-        if (!qrcode) {
-            qrcode = await QRcode.create();
-        }
+        let qrcode = await QRcode.singelton();
+
         // Generare random invitation QR code
-        let imgQr = await qrcode.getImageSource(customUtils.uid(6));
+        let imgQr = await qrcode.getImageSource(Invite.inviteUrl(customUtils.uid(6)), true);
 
         res.render('manage/qrcode', {
             csrfToken: req.csrfToken(),

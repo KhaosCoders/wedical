@@ -1,12 +1,14 @@
-extends manage_layout.pug
+extends ../manage_layout.pug
 
-include ../includes/_modals.pug
-include ../includes/_icons.pug
-include ../includes/_forms.pug
+include ../../includes/_modals.pug
+include ../../includes/_icons.pug
+include ../../includes/_forms.pug
 
 
 block content
     span.table-add.float-right.mb-3.mr-2
+        a.text-dark.mx-2(href='/manage/invites/qrprint', data-toggle='tooltip', title=__('Print QR Codes to place on invitations'))
+            i.fas.fa-qrcode.fa-2x(aria-hidden='true')
         a.text-success(href='#', data-toggle='modal', data-target='#addInviteModal')
             i.fas.fa-plus.fa-2x(aria-hidden='true')
 

@@ -38,6 +38,15 @@ class QRcode extends Model {
         });
     }
 
+    static async singelton() {
+        // First or new QR-Code
+        let qrcode = await QRcode.findOne();
+        if (!qrcode) {
+            qrcode = await QRcode.create();
+        }
+        return qrcode;
+    }
+
     /**
      * Sanitize model data before storing them
      */
@@ -48,14 +57,10 @@ class QRcode extends Model {
 
     /**
      * Generates a QR code as Base64 image source
-     * @param {string} code Security code of initation
+     * @param {string} url URL encoded in QR code
+     * @param {bool} validate Set if the QR code should be validated
      */
-    async getImageSource(code) {
-        let baseUrl = config.baseUrl;
-        if (!baseUrl.endsWith('/')) {
-            baseUrl += '/';
-        }
-        let url = `${baseUrl}invite/${code}`;
+    async getImageSource(url, validate) {
         let imgSrc = '';
         let error = '';
         try {
@@ -68,7 +73,9 @@ class QRcode extends Model {
                 imgSrc = await addQRLogo(imgSrc, this.logo, this.logoSize);
 
                 // Check if QR code is still readable
-                await readQRCode(imgSrc);
+                if (validate) {
+                    await readQRCode(imgSrc);
+                }
             }
         } catch (ex) {
             error = ex.message ? ex.message : ex;

@@ -3,11 +3,11 @@ const express = require('express');
 const router = express.Router();
 const csrf = require('csurf');
 const { check, validationResult } = require('express-validator');
-const reqSanitizer = require('../../extension/request-sanitizer');
-const { Auth } = require('../../auth');
-const { addBreadcrump } = require('../../utils');
-var Invite = require('../../models/invite');
-var Guest = require('../../models/guest');
+const reqSanitizer = require('../../../extension/request-sanitizer');
+const { Auth } = require('../../../auth');
+const { addBreadcrump } = require('../../../utils');
+var Invite = require('../../../models/invite');
+var Guest = require('../../../models/guest');
 
 // CSRF
 var csrfProtection = csrf();
@@ -95,14 +95,19 @@ async function listInvites(req, res) {
     });
 }
 
+let breadcrump = addBreadcrump('Invites', '/manage/invites');
+
+// print QR codes route
+router.use('/qrprint', breadcrump, require('./qrprint'));
+
 // Define the invites page route.
 router.get('/',
     csrfProtection,
     Auth.authenticate('/manage/invites'),
     Auth.authorize('manage', { 'Segment': 'invites' }),
-    addBreadcrump('Invites', '/manage/invites'),
+    breadcrump,
     async function(req, res) {
-        res.render('manage/invites', {
+        res.render('manage/invites/index', {
             csrfToken: req.csrfToken(),
             guests: await Guest.find(),
         });

@@ -4,6 +4,8 @@ const extend = require('extend');
 const { Model, Timestamps } = require('nedb-models');
 const ModelSanitizer = require('../extension/model-sanitizer');
 const customUtils = require('nedb/lib/customUtils');
+const config = require('../config');
+const QRcode = require('./qrcode');
 
 /**
  * Model for invitations
@@ -61,6 +63,32 @@ class Invite extends Model {
         }
     }
 
+    /**
+     * Returns the URL a guest has to use to accept the invitation
+     */
+    getInviteUrl() {
+        return Invite.inviteUrl(this.token);
+    }
+
+    /**
+     * Returns the URL a guest has to use to accept the invitation
+     * @param {string} code Invitation security token
+     */
+    static inviteUrl(code) {
+        let baseUrl = config.baseUrl;
+        if (!baseUrl.endsWith('/')) {
+            baseUrl += '/';
+        }
+        return `${baseUrl}invite/${code}`;
+    }
+
+    /**
+     * Generates a QR code as Base64 image source
+     */
+    async getQRCode() {
+        let qrcode = await QRcode.singelton();
+        return await qrcode.getImageSource(Invite.inviteUrl(this.token));
+    }
 }
 
 Invite.ensureIndex({ fieldName: 'token', unique: true });
