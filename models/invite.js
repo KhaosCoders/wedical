@@ -3,6 +3,7 @@ const path = require('path');
 const extend = require('extend');
 const { Model, Timestamps } = require('nedb-models');
 const ModelSanitizer = require('../extension/model-sanitizer');
+const customUtils = require('nedb/lib/customUtils');
 
 /**
  * Model for invitations
@@ -12,6 +13,7 @@ const ModelSanitizer = require('../extension/model-sanitizer');
  * - type (guestlist/wildcard)
  * - guests
  * - tickets
+ * - token
  */
 class Invite extends Model {
     /**
@@ -38,7 +40,8 @@ class Invite extends Model {
                 title: '',
                 guests: [],
                 type: 'guestlist',
-                tickets: 0
+                tickets: 0,
+                token: customUtils.uid(6)
             },
         });
     }
@@ -59,6 +62,8 @@ class Invite extends Model {
     }
 
 }
+
+Invite.ensureIndex({ fieldName: 'token', unique: true });
 
 Invite.use(Timestamps);
 Invite.use(ModelSanitizer);

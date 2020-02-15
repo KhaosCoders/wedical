@@ -12,21 +12,23 @@ block content
 
     table.data-table.table.table-responsive-md#invitesTable(data-page-length='25',
                                                         data-invitee-column='1'
-                                                        data-action-column='2'
+                                                        data-action-column='3'
                                                         data-delete-modal='#deleteInviteModal'
                                                         data-edit-modal='#editInviteModal'
                                                         data-edit-form='#editInviteForm'
                                                         data-order='[[ 0, "asc" ]]',
                                                         data-ajax='/manage/invites/list',
-                                                        data-columns='[{"data": "title"},{"data": "guests.length"},{"data": "_id"}]')
+                                                        data-columns='[{"data": "title"},{"data": "guests.length"},{"data": "token"},{"data": "_id"}]')
         colgroup
             col(width='50%')
-            col(width='50%')
+            col(width='25%')
+            col(width='25%')
             col(width='1')
         thead
             tr
                 th= __('Title')
                 th= __('Guests')
+                th= __('Code')
                 th= __('Action')
 
     +wideModal('addInviteModal',
