@@ -11,6 +11,7 @@ if (!fs.existsSync(__dirname + '/config.js')) {
 
 const createError = require('http-errors');
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const helmet = require('helmet');
 const flash = require('connect-flash');
 const path = require('path');
@@ -197,6 +198,12 @@ app.use(sassMiddleware({
 
 // serve static files.
 app.use(express.static(path.join(__dirname, 'public')));
+
+// file uploads
+app.use(fileUpload({
+    // 5MB Limit
+    limits: { fileSize: 5 * 1024 * 1024 },
+}));
 
 // Use the controllers.
 app.use(require('./controllers'));

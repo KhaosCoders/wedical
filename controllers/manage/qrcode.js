@@ -4,12 +4,22 @@ const router = express.Router();
 const csrf = require('csurf');
 const { check, validationResult } = require('express-validator');
 const reqSanitizer = require('../../extension/request-sanitizer');
+const customUtils = require('nedb/lib/customUtils');
 const { Auth } = require('../../auth');
-const { addBreadcrump } = require('../../utils');
+const { addBreadcrump, base64PNG } = require('../../utils');
 var QRcode = require('../../models/qrcode');
 
 // CSRF
 var csrfProtection = csrf();
+
+async function removeLogo(req, res) {
+    let qrcode = await QRcode.findOne();
+    if (qrcode) {
+        qrcode.logo = '';
+        await qrcode.save();
+    }
+    return res.redirect('/manage/qrcode');
+}
 
 async function saveQR(req, res) {
     const errors = validationResult(req);
@@ -20,6 +30,10 @@ async function saveQR(req, res) {
     debug('Save QR code');
     let qrcode = await QRcode.findOne();
     if (qrcode) {
+        // logo file
+        if (req.files && req.files.logo) {
+            qrcode.logo = await base64PNG(req.files.logo.data);
+        }
         qrcode.assign(req.body);
         await qrcode.save();
         return res.redirect('/manage/qrcode');
@@ -42,12 +56,15 @@ router.get('/',
         if (!qrcode) {
             qrcode = await QRcode.create();
         }
+        // Generare random invitation QR code
+        let imgQr = await qrcode.getImageSource(customUtils.uid(6));
 
         res.render('manage/qrcode', {
             csrfToken: req.csrfToken(),
             errorLevels: QRcode.errorLevels,
             qrcode: qrcode,
-            qrsource: await qrcode.getImageSource('jkjaFJka', 'djk')
+            qrsource: imgQr.img,
+            qrerr: imgQr.err,
         });
     });
 
@@ -56,10 +73,19 @@ router.post('/',
     csrfProtection,
     Auth.authenticate(false),
     Auth.authorize('manage', { 'Segment': 'qrcode' }),
+    reqSanitizer.removeBody(['_csrf']),
     check('version').custom((value, { req }) => value >= 1 && value <= 40),
-    check('errroCorrection').isIn(['L', 'M', 'Q', 'H']),
+    check('errorCorrection').isIn(['L', 'M', 'Q', 'H']),
     check('logoSize').custom((value, { req }) => value >= 0 && value <= 100),
     saveQR
+);
+
+// Define the roles page route
+router.get('/dellogo',
+    csrfProtection,
+    Auth.authenticate('/manage/qrcode'),
+    Auth.authorize('manage', { 'Segment': 'qrcode' }),
+    removeLogo
 );
 
 module.exports = router;

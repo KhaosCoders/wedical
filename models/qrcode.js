@@ -5,6 +5,7 @@ const { Model, Timestamps } = require('nedb-models');
 const ModelSanitizer = require('../extension/model-sanitizer');
 const QRCode = require('qrcode');
 const config = require('../config');
+const { addQRLogo, readQRCode } = require('../utils');
 
 
 class QRcode extends Model {
@@ -30,9 +31,9 @@ class QRcode extends Model {
         return extend(true, super.defaults(), {
             values: {
                 version: 3,
-                errroCorrection: 'M',
+                errorCorrection: 'M',
                 logo: '',
-                logoSize: 20,
+                logoSize: 15,
             },
         });
     }
@@ -47,19 +48,32 @@ class QRcode extends Model {
 
     /**
      * Generates a QR code as Base64 image source
-     * @param {string} invitation ID of inivitation
      * @param {string} code Security code of initation
      */
-    async getImageSource(invitation, code) {
-        let url = `${config.baseUrl}/invite/${invitation}/${code}`;
+    async getImageSource(code) {
+        let baseUrl = config.baseUrl;
+        if (!baseUrl.endsWith('/')) {
+            baseUrl += '/';
+        }
+        let url = `${baseUrl}invite/${code}`;
+        let imgSrc = '';
+        let error = '';
         try {
-            return await QRCode.toDataURL(url, {
-                errorCorrectionLevel: this.errroCorrection,
+            imgSrc = await QRCode.toDataURL(url, {
+                errorCorrectionLevel: this.errorCorrection,
                 version: this.version,
             });
+            if (this.logo) {
+                // Place logo over QR code
+                imgSrc = await addQRLogo(imgSrc, this.logo, this.logoSize);
+
+                // Check if QR code is still readable
+                await readQRCode(imgSrc);
+            }
         } catch (ex) {
-            return `error: ${ex.message}`;
+            error = ex.message ? ex.message : ex;
         }
+        return { img: imgSrc, err: error };
     }
 }
 
