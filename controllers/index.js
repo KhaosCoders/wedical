@@ -13,7 +13,9 @@ router.use('/logout', require('./logout'));
 
 // Define the home page route.
 router.get('/', function(req, res) {
-    res.render('index', null);
+    res.render('index', {
+        bodyClass: 'startpage',
+    });
 });
 
 module.exports = router;
