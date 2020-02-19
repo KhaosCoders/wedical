@@ -43,9 +43,19 @@ router.post('/',
   });
 
 // Define the invite page route.
-router.get('/:id', csrfProtection, function(req, res) {
+router.get('/:token', csrfProtection, async function(req, res) {
+  if (!req.params.token) {
+    return res.redirect('/invite');
+  }
+
+  let invite = await Invite.findOne({ token: req.params.token });
+  if (!invite) {
+    return res.redirect('/invite');
+  }
+  
   res.render('invite/invite.pug', {
     bodyClass: 'invite',
+    invite: invite,
   });
 });
 
