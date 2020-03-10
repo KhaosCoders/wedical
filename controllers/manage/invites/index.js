@@ -2,10 +2,17 @@ const debug = require('debug')('wedical:manage-guests');
 const express = require('express');
 const router = express.Router();
 const csrf = require('csurf');
-const { check, validationResult } = require('express-validator');
+const {
+	check,
+	validationResult
+} = require('express-validator');
 const reqSanitizer = require('../../../extension/request-sanitizer');
-const { Auth } = require('../../../auth');
-const { addBreadcrump } = require('../../../utils');
+const {
+	Auth
+} = require('../../../auth');
+const {
+	addBreadcrump
+} = require('../../../utils');
 var Invite = require('../../../models/invite');
 var Guest = require('../../../models/guest');
 
@@ -76,7 +83,7 @@ async function addInvite(req, res) {
 			_id: removeGuest
 		});
 		if (!guest.state || guest.state === '') {
-			guest.setAttending();
+			guest.setInvited();
 			await guest.save();
 		}
 	}
@@ -115,7 +122,7 @@ async function putInvite(req, res) {
 			// Change state of added guests
 			if (req.body.guests) {
 				if (!Array.isArray(req.body.guests)) {
-					req.body.guests = [ req.body.guests ];
+					req.body.guests = [req.body.guests];
 				}
 				for (var addGuest of req.body.guests) {
 					if (invite.guests.indexOf(addGuest) < 0) {
@@ -123,7 +130,7 @@ async function putInvite(req, res) {
 							_id: addGuest
 						});
 						if (!guest.state || guest.state === '') {
-							guest.state = 'invited';
+							guest.setInvited();
 							await guest.save();
 						}
 					}
@@ -169,7 +176,7 @@ router.get(
 		Segment: 'invites'
 	}),
 	breadcrump,
-	async function(req, res) {
+	async function (req, res) {
 		res.render('manage/invites/index', {
 			csrfToken: req.csrfToken(),
 			guests: await Guest.find()
@@ -231,7 +238,7 @@ router.put(
 	Auth.authorize('manage', {
 		Segment: 'invites'
 	}),
-	reqSanitizer.removeBody([ '_id', 'createdAt', 'updatedAt' ]),
+	reqSanitizer.removeBody(['_id', 'createdAt', 'updatedAt']),
 	check('title').notEmpty(),
 	check('type').notEmpty(),
 	putInvite
