@@ -175,6 +175,10 @@ router.post('/:token/register/:utoken',
         guest.userId = user._id;
         await guest.save();
 
+        // Reset register session attributes
+        req.session.guestid = '';
+        req.session.redirect_url = '';
+
         // login as the new user
         req.login(user, function (err) {
             if (err) {
