@@ -138,6 +138,10 @@ router.post('/:token/register/:utoken',
             });
         }
 
+        if (!req.session.guestid) {
+            return result.status(403).end();
+        }
+
         if (!req.params.token || !req.params.utoken) {
             return result.status(404).end();
         }
