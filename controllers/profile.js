@@ -136,8 +136,8 @@ router.post('/avatar',
                 img = img.crop({
                     width: shortEdge,
                     height: shortEdge,
-                    x: Math.floor((img.Width - shortEdge) / 2),
-                    y: Math.floor((img.Height - shortEdge) / 2),
+                    x: Math.floor((img.width - shortEdge) / 2),
+                    y: Math.floor((img.height - shortEdge) / 2),
                 });
             }
             // Resize to save storage
