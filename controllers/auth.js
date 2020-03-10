@@ -41,6 +41,7 @@ router.get('/success',
                 _id: guestid
             });
             guest.email = user.email;
+            guest.userId = user._id;
             await guest.save();
         }
 
