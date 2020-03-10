@@ -242,8 +242,8 @@
                                 if (key === 'auth' || key === 'roles') {
                                     continue;
                                 }
-                                if (Array.isArray(value)) {
-                                    var container = form.find(`[name='${key}1']`).closest('.endlessInputEnabled');
+                                var container = form.find(`[name='${key}1']`).closest('.endlessInputEnabled');
+                                if (Array.isArray(value) && container.length > 0) {
                                     if (container.length < 1) {
                                         continue;
                                     }
