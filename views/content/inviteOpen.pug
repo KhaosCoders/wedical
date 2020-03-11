@@ -50,7 +50,7 @@ div.container.bg-light.mt-2
     div.row.mb-3
       div.col
         div.progress
-          - let percent = 1+(99*(claimedTickets/parseInt(invite.tickets)))
+          - let percent = Math.floor(1+(99*(claimedTickets/parseInt(invite.tickets))))
           - let color = percent <= 33 ? 'bg-success' : percent <= 66 ? 'bg-warning' : 'bg-danger'
           div.progress-bar.progress-bar-striped.progress-bar-animated(role="progressbar", class=`w-${percent} ${color}`, aria-valuenow=claimedTickets, aria-valuemin="0", aria-valuemax=invite.tickets)
     div.row
@@ -64,7 +64,8 @@ div.container.bg-light.mt-2
                   button.close(type='button', data-dismiss='modal', aria-label=__('Close'))
                       span(aria-hidden='true') &times;
               div.modal-body
-                form.needs-validation#ticketForm(method='post' action='/invite/claim')
+                form.ajaxForm.needs-validation#ticketForm(method='post', action=`/invite/${invite.token}/claim`, data-error='#ticketFormError')
+                  input(type='hidden', name='_csrf' value=csrfToken)
                   div.form-group
                     label(for='name')= __('Full Name')
                     input.form-control(type='text', name='name', id='name', placeholder=__('Enter your full name'), required)
@@ -72,5 +73,7 @@ div.container.bg-light.mt-2
                     label(for='email')= __('Email')
                     input.form-control(type='email', name='email', id='email', placeholder=__('Enter email address'), required)
               div.modal-footer
-                  button.btn.btn-primary.font-weight-bold(type='submit', form='ticketForm')= __('Submit')
+                div#ticketFormError.alert.alert-danger.collapse= __('Ticket can\'t be claimed')
+                div
+                  button.btn.btn-primary.font-weight-bold.mx-2(type='submit', form='ticketForm')= __('Submit')
                   button.btn.btn-secondary.font-weight-bold(type='button', data-dismiss='modal')= __('Cancel')

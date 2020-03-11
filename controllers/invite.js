@@ -89,21 +89,21 @@ router.get('/', csrfProtection, function (req, res) {
 // Define the invite register page route.
 router.get('/:token/register/:utoken', csrfProtection, async function (req, res) {
     if (!req.params.token || !req.params.utoken) {
-        return result.status(404).end();
+        return res.status(404).end();
     }
 
     let invite = await Invite.findOne({
         token: req.params.token
     });
     if (!invite) {
-        return result.status(404).end();
+        return res.status(404).end();
     }
 
     var guest = await Guest.findOne({
         token: req.params.utoken
     });
     if (!guest || invite.guests.indexOf(guest._id) < 0) {
-        return result.status(404).end();
+        return res.status(404).end();
     }
 
     // check if already registered
@@ -140,25 +140,25 @@ router.post('/:token/register/:utoken',
         }
 
         if (!req.session.guestid) {
-            return result.status(403).end();
+            return res.status(403).end();
         }
 
         if (!req.params.token || !req.params.utoken) {
-            return result.status(404).end();
+            return res.status(404).end();
         }
 
         let invite = await Invite.findOne({
             token: req.params.token
         });
         if (!invite) {
-            return result.status(404).end();
+            return res.status(404).end();
         }
 
         var guest = await Guest.findOne({
             token: req.params.utoken
         });
         if (!guest || invite.guests.indexOf(guest._id) < 0) {
-            return result.status(404).end();
+            return res.status(404).end();
         }
 
         // Create new user
@@ -283,7 +283,7 @@ router.get('/:token/accept', csrfProtection, async function (req, res) {
 router.post('/:token/gstate/:uid', csrfProtection, async function (req, res) {
     let result = await findInviteGuest(req);
     if (!result || req.body.value === undefined) {
-        return result.status(404).end();
+        return res.status(404).end();
     }
 
     if (req.body.value === 'true') {
@@ -301,7 +301,7 @@ router.post('/:token/gstate/:uid', csrfProtection, async function (req, res) {
 router.get('/:token/gdiet/:uid', csrfProtection, async function (req, res) {
     let result = await findInviteGuest(req);
     if (!result) {
-        return result.status(404).end();
+        return res.status(404).end();
     }
 
     var pojo = result.guest.toPOJO();
@@ -321,7 +321,7 @@ router.get('/:token/gdiet/:uid', csrfProtection, async function (req, res) {
 router.put('/:token/gdiet/:uid', csrfProtection, async function (req, res) {
     let result = await findInviteGuest(req);
     if (!result || req.body.allergy1 === undefined || req.body.diet1 === undefined) {
-        return result.status(404).end();
+        return res.status(404).end();
     }
 
     result.guest.allergy = [];
@@ -347,7 +347,7 @@ router.put('/:token/gdiet/:uid', csrfProtection, async function (req, res) {
 router.get('/:token/ginvite/:uid', csrfProtection, async function (req, res) {
     let result = await findInviteGuest(req);
     if (!result) {
-        return result.status(404).end();
+        return res.status(404).end();
     }
 
     result.invite.addInviteLink(result.guest);
@@ -362,23 +362,58 @@ router.get('/:token/ginvite/:uid', csrfProtection, async function (req, res) {
 });
 
 // Define the get guest invite link route.
-router.post('/:token/ginvite/:uid', csrfProtection, async function (req, res) {
-    let result = await findInviteGuest(req);
-    if (!result || !req.body.mail) {
-        return result.status(404).end();
-    }
+router.post('/:token/claim',
+    csrfProtection,
+    check('name').notEmpty(),
+    check('email').isEmail().bail().custom(checkEmailExists),
+    async function (req, res) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                errors: errors.array()
+            });
+        }
 
-    result.guest.email = req.body.mail;
-    await result.guest.save();
+        if (!req.params.token) {
+            return res.status(404).end('Not found');
+        }
 
-    result.invite.addInviteLink(result.guest);
+        let invite = await Invite.findOne({
+            token: req.params.token
+        });
+        if (!invite) {
+            return res.status(404).end('Not found');
+        }
 
-    sendmail(req, req.body.mail, 'guest_invite', {
-        guest: result.guest
+        // Check tickets
+        let guests = await Guest.find({
+            _id: {
+                $in: invite.guests
+            }
+        });
+
+        let claimedTickets = dataExt.sum(guests.map(guest => guest.state == 'attending' ? 1 : 0));
+        if (claimedTickets >= parseInt(invite.tickets)) {
+            return res.status(403).end('All Tickets gone');
+        }
+
+        let guest = await Guest.create({
+            name: req.body.name,
+            email: req.body.email,
+            group: invite.title
+        });
+
+        guest.setAttending();
+        await guest.save();
+
+        invite.guests.push(guest._id);
+        await invite.save();
+
+        invite.addInviteLink(guest);
+        return res.json({
+            redirect: guest.inviteLink
+        });
     });
-
-    return res.end();
-});
 
 
 module.exports = router;

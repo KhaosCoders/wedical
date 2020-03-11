@@ -41,5 +41,6 @@
     "%s. Diet": "%s. Diät",
     "Enter your full name": "Gibt deinen vollen Namen ein",
     "Enter email address": "Gib deine Email-Adresse ein",
-    "Claim a Ticket": "Anmelden"
+    "Claim a Ticket": "Anmelden",
+    "Ticket can't be claimed": "Ticket konnte nicht beansprucht werden"
 }
