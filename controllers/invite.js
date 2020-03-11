@@ -6,6 +6,7 @@ const {
     check,
     validationResult
 } = require('express-validator');
+const dataExt = require('../extension/data-ext');
 var Invite = require('../models/invite');
 var Guest = require('../models/guest');
 var User = require('../models/user');
@@ -230,10 +231,13 @@ router.get('/:token', csrfProtection, async function (req, res) {
         }
     });
 
+    let claimedTickets = dataExt.sum(guests.map(guest => guest.state == 'attending' ? 1 : 0));
+
     res.render(`invite/${invite.state}.pug`, {
         bodyClass: 'invite',
         csrfToken: req.csrfToken(),
         invite: invite,
+        claimedTickets: claimedTickets,
         guests: guests.map(guest => invite.addInviteLink(guest)),
     });
 });

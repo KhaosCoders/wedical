@@ -1,34 +1,76 @@
 include ../invite/_inviteBtns.pug
 
 div.container.bg-light.mt-2
-  div.row
-    div.col
-      h1.h1.mt-4 Hi #{invite.title}
-      p= __('You have been invited to the party! =)')
-      div.container.m-2
-        div.row
-          div.col
-            +acceptBtn.btn.btn-outline-success.btn-lg.w-100.btn-jumbo
-          div.col
-            a(href='#', data-toggle='modal', data-target="#declideModal").btn.btn-outline-danger.btn-lg.w-100.btn-jumbo= __('Decline')
-            div.modal.fade(role='dialog', tabindex='-1', id='declideModal')
-              div.modal-dialog(role='document')
-                  div.modal-content.bg-danger.text-white
-                      div.modal-header
-                          h5.modal-title= __('Decline invitation')
-                          button.close(type='button', data-dismiss='modal', aria-label=__('Close'))
-                              span.text-white(aria-hidden='true') &times;
-                      div.modal-body
-                        p= __('You are about to decline this invitation.')
-                        p= __('Notice that there is no way back!')
-                        if invite.guests.length > 1
-                          p
-                            i.fas.fa-exclamation-triangle
-                            |
-                            |
-                            strong= __('If some of you will come, please accept the invitation and change the attendance status of the guests.')
-                      div.modal-footer
-                          +declineBtn.btn.btn-outline-warning.font-weight-bold
-                          button.btn.btn-outline-light.font-weight-bold(type='button', data-dismiss='modal')= __('Cancel')
-
-
+  if type == 'guestlist'
+    div.row
+      div.col
+        h1.h1.mt-4 Hi #{invite.title}
+        p= __('You have been invited to the party! =)')
+        div.container.m-2
+          div.row
+            div.col
+              +acceptBtn.btn.btn-outline-success.btn-lg.w-100.btn-jumbo
+            div.col
+              a(href='#', data-toggle='modal', data-target="#declideModal").btn.btn-outline-danger.btn-lg.w-100.btn-jumbo= __('Decline')
+              div.modal.fade(role='dialog', tabindex='-1', id='declideModal')
+                div.modal-dialog(role='document')
+                    div.modal-content.bg-danger.text-white
+                        div.modal-header
+                            h5.modal-title= __('Decline invitation')
+                            button.close(type='button', data-dismiss='modal', aria-label=__('Close'))
+                                span.text-white(aria-hidden='true') &times;
+                        div.modal-body
+                          p= __('You are about to decline this invitation.')
+                          p= __('Notice that there is no way back!')
+                          if invite.guests.length > 1
+                            p
+                              i.fas.fa-exclamation-triangle
+                              |
+                              |
+                              strong= __('If some of you will come, please accept the invitation and change the attendance status of the guests.')
+                        div.modal-footer
+                            +declineBtn.btn.btn-outline-warning.font-weight-bold
+                            button.btn.btn-outline-light.font-weight-bold(type='button', data-dismiss='modal')= __('Cancel')
+  //- Wildcards
+  else
+    div.row
+      div.col
+        h1.h1.mt-4 Hi #{invite.title}
+        p= __('Sorry I can\'t invite all of you.')
+        p= __('So be fast to reply =)')
+    div.row
+      div.col
+          p.h1
+            i.fas.fa-ticket-alt
+            |
+            |
+            = __('Tickets')
+            span.badge.badge-pill.badge-primary.mx-2
+              = invite.tickets-claimedTickets
+    div.row.mb-3
+      div.col
+        div.progress
+          - let percent = 1+(99*(claimedTickets/parseInt(invite.tickets)))
+          - let color = percent <= 33 ? 'bg-success' : percent <= 66 ? 'bg-warning' : 'bg-danger'
+          div.progress-bar.progress-bar-striped.progress-bar-animated(role="progressbar", class=`w-${percent} ${color}`, aria-valuenow=claimedTickets, aria-valuemin="0", aria-valuemax=invite.tickets)
+    div.row
+      div.col.text-center
+        button.btn.btn-jumbo.btn-outline-success.w-25.my-3(data-toggle='modal', data-target="#ticketModal", disabled= claimedTickets>=parseInt(invite.tickets))= __('Claim a Ticket')
+    div.modal.fade(role='dialog', tabindex='-1', id='ticketModal')
+      div.modal-dialog(role='document')
+          div.modal-content
+              div.modal-header
+                  h5.modal-title= __('Claim a Ticket')
+                  button.close(type='button', data-dismiss='modal', aria-label=__('Close'))
+                      span(aria-hidden='true') &times;
+              div.modal-body
+                form.needs-validation#ticketForm(method='post' action='/invite/claim')
+                  div.form-group
+                    label(for='name')= __('Full Name')
+                    input.form-control(type='text', name='name', id='name', placeholder=__('Enter your full name'), required)
+                  div.form-group
+                    label(for='email')= __('Email')
+                    input.form-control(type='email', name='email', id='email', placeholder=__('Enter email address'), required)
+              div.modal-footer
+                  button.btn.btn-primary.font-weight-bold(type='submit', form='ticketForm')= __('Submit')
+                  button.btn.btn-secondary.font-weight-bold(type='button', data-dismiss='modal')= __('Cancel')
