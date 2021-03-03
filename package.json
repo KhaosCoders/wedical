@@ -50,7 +50,7 @@
         "pdf-lib": "^1.4.1",
         "popper.js": "^1.16.1",
         "preload-it": "^1.4.0",
-        "pug": "^2.0.4",
+        "pug": "^3.0.1",
         "qrcode": "^1.4.4",
         "qrcode-reader": "^1.0.4",
         "validator": "^12.2.0"
